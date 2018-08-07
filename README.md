@@ -9,4 +9,6 @@ As principais técnicas exploradas são:
 -Coeficientes de Frequência Mel-Cepstrais(MFCC)
 -Modelo de Mistura de Gaussianas(GMM-UBM)
 
-Até o momento foram realizados testes utilizando a base de dados ELSDSR, onde foi obtida uma Taxa de Falsa Rejeição de 0% dentre 22 tentativas, e uma de Falsa Aceitação de 2% dentre 50 tentativas
+Até o momento foram realizados testes utilizando a base de dados ELSDSR, onde foi obtida uma Taxa de Falsa Rejeição de 0% dentre 22 tentativas, e uma de Falsa Aceitação de 2% dentre 50 tentativas.
+
+Extensões do Python sendo utilizadas: python speech features, sklearn,scipy,numpy,matplotlib.
