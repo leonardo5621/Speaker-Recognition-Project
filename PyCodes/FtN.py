@@ -30,12 +30,15 @@ def Features(PATH):
 
     FT=np.zeros((1,13))
 
-    for file in listdir():
-        Audio=wavfile.read(file)
+    for files in listdir():
         
-        Mfcc=psf.mfcc(Audio[1])
+        if files.endswith('.wav'):
+        
+            Audio=wavfile.read(files)
+        
+            Mfcc=psf.mfcc(Audio[1])
 
-        FT=np.concatenate((FT,Mfcc))
+            FT=np.concatenate((FT,Mfcc))
 
     
     return FT
