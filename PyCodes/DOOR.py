@@ -8,10 +8,10 @@ client=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 pair=(host,port)
 client.connect(pair)
 
-print('Conexao feita\n Digite 55 para sair')
+print('Conexao feita\n Digite TERM para sair')
 
 message= raw_input()
-while message!=55:
+while message!='TERM':
 
 	client.send(message)
 

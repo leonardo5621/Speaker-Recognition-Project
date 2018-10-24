@@ -41,7 +41,7 @@ while True:
 				con.send(E.encode('utf-8'))
 
 			else: 
-				NFile=open('IDSN','wb')
+				NFile=open('IDS','wb')
 				NList=IDList.append(IDRecv)
 				pickle.dump(NList,NFile)
 

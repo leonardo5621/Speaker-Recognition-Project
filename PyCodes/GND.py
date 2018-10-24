@@ -13,12 +13,17 @@ def TrainModel(TrainDirectory,ModelName,N_Components=80,Type='tied'):
 	FTS=FtN.Features(TrainDirectory)
 
 	Model.fit(FTS)
-
+	
+	os.chdir(TrainDirectory) ##Pasta com os arquivos de trainamento  e onde o arquivo do GMM sera armazenado
 	File=open(ModelName,'wb')
 
 	pickle.dump(Model,File)
 
-	File.close()
+	File.close()		##ModelName eh o nome do arquivo que deve ser o mesmo em speaker 
+
+	os.chdir('..')
+	os.chdir('..')
+
 
 arquivo=open('UBMArq','rb')
 
@@ -34,11 +39,10 @@ def Verification(SPEAKER,Audio):
 
 	if (isinstance(Audio,str) & isinstance(SPEAKER,str)):
 
-		os.chdir('train/'+SPEAKER)
     
 		if (SPEAKER in os.listdir()):
 
-			SPFile=open(SPEAKER,'wb')
+			SPFile=open('train/'+SPEAKER,'rb')
         
 			ModelRequested=pickle.load(SPFile)
         
