@@ -1,8 +1,8 @@
 import socket
 import pickle
 import numpy as np
-import GND
-
+import GmmVerification as GND
+## Change the Host according to the port being communicated
 host= '127.0.0.1'
 port= 5000
 
@@ -17,7 +17,7 @@ server.listen(1)
 while True:
 
 	con,client=server.accept()
-	print('Conexao feita por: ',client)
+	print('Connection Established with : ',client)
 
 	while True:
 
@@ -37,22 +37,22 @@ while True:
 			File.close()
 			
 			if IDRecv in IDList:
-				E='ID ja existente'
-				con.send(E.encode('utf-8'))
+				IDMessage='ID already exists'
+				con.send(IDMessage.encode('utf-8'))
 
 			else: 
 				NFile=open('IDS','wb')
 				NList=IDList.append(IDRecv)
 				pickle.dump(NList,NFile)
 
-				IDCreated='ID Criado' 
+				IDCreated='ID Created' 
 				con.send(IDCreated.encode('utf-8'))
 		
 				DirectoryAudio=con.recv(1024).decode('utf-8')
 			
 				GND.TrainModel(DirectoryAudio,IDRecv)
 
-				MCreated='Modelo Criado com Sucesso'
+				MCreated='Model Created Succesfully'
 
 				con.send(MCreated.encode('utf-8'))
 
@@ -67,6 +67,6 @@ while True:
 
 
 
-	print("Conexao sendo finalizada")
+	print("Connection Finished")
 	con.close()
 
