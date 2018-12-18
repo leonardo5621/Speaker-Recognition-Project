@@ -18,3 +18,24 @@ The techniques mentioned have been tested in the ELSDSR Audio Database, a False 
 - matplotlib
 - pyaudio
  -pydub
+
+# Reconnaissance du Locuteur
+
+Dépôt pour un projet s'agissant d'un Système d'accès basé dans la Reconnaissance du Locuteur.
+
+l'Objectif de ce projet est réaliser le contrôle d'accès dans un lieu restraint en utilisant des techniques du Reconnaissance/Vérification du locuteur.
+#  Techniques Principales Utilisées:
+- Mel-Frequency Cepstral Coefficients(MFCC) pour faire l'extraction de caractéristiques du signal.
+- Modèle par mélange de gaussienner(GMM) pour accomplir la Reconnaissance des formes
+
+Le Système a été testées dans la Base de données d'audio ELSDSR, la pourcentage de détection manquée a été 0% dans 22 essais et une pourcentage d'Acceptation d'un imposteur de 2% dans 50 essais
+
+ #  Il y a besoin des packages suivants en Python:
+   
+- Python Speech Features
+- sklearn 
+- scipy
+- numpy
+- matplotlib
+- pyaudio
+ -pydub
