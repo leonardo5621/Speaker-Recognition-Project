@@ -1,14 +1,41 @@
-# LRM_4_Voice
-Repositório do projeto de Pesquisa: Sistema de Controle de Acesso Baseado em Reconhecimento de Voz
+# Speaker Recognition
+Repository for the project of an Access System Based on Speaker Recognition.
 
-Este projeto consiste na proposta de um sistema de reconhecimento de voz,mais especificamente para reconhecimento de locutor e independente de texto, para ser utilizada como uma ferramenta de controle de acesso.
-Python é a linguagem utilizada.
+The Objective of this project is performing Speaker Recognition/Verification to control the access to restricted rooms.
+# The Main Techniques Explored in this project are:
+- Mel-Frequency Cepstral Coefficients(MFCC) for the Feature Extraction from Audio Files
+- Gaussian-Mixture Models with a Universal Background Model(GMM-UBM) for the Pattern Recognition
 
-As principais técnicas exploradas são:
+The techniques mentioned have been tested in the ELSDSR Audio Database, a False Rejection Rate of 0% has been obtained in 22 trials, and a False Acception Rate of 2% in 50 trials.
 
--Coeficientes de Frequência Mel-Cepstrais(MFCC)
--Modelo de Mistura de Gaussianas(GMM-UBM)
+ # Requirements
+ 
+ The Python packages which have been used for this project:  
+- Python Speech Features
+- sklearn 
+- scipy
+- numpy
+- matplotlib
+- pyaudio
+ -pydub
 
-Até o momento foram realizados testes utilizando a base de dados ELSDSR, onde foi obtida uma Taxa de Falsa Rejeição de 0% dentre 22 tentativas, e uma de Falsa Aceitação de 2% dentre 50 tentativas.
+# Reconnaissance du Locuteur
 
-Extensões do Python sendo utilizadas: python speech features, sklearn,scipy,numpy,matplotlibpyaudio,pydub
+Dépôt pour un projet s'agissant d'un Système d'accès basé dans la Reconnaissance du Locuteur.
+
+l'Objectif de ce projet est réaliser le contrôle d'accès dans un lieu restraint en utilisant des techniques du Reconnaissance/Vérification du locuteur.
+#  Techniques Principales Utilisées:
+- Mel-Frequency Cepstral Coefficients(MFCC) pour faire l'extraction de caractéristiques du signal.
+- Modèle par mélange de gaussienner(GMM) pour accomplir la Reconnaissance des formes
+
+Le Système a été testées dans la Base de données d'audio ELSDSR, la pourcentage de détection manquée a été 0% dans 22 essais et une pourcentage d'Acceptation d'un imposteur de 2% dans 50 essais
+
+ #  Il y a besoin des packages suivants en Python:
+   
+- Python Speech Features
+- sklearn 
+- scipy
+- numpy
+- matplotlib
+- pyaudio
+ -pydub
