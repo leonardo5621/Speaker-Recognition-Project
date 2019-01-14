@@ -14,7 +14,7 @@ An additional model has been created, the Universal Background Model(UBM). The o
  # Results
 Two separate audio datasets have been used to evaluate the approach.
 The first dataset contains audio data from 15 different speaker from the VoxForge repository.
-The second is the ELSDSR database, from the department of Informatics and Mathematical Modeling(IMM) at the Technical University of Denmark(DTU)
+The second is the ELSDSR database, from the department of Informatics and Mathematical Modeling(IMM) at the Technical University of Denmark(DTU).
 The metrics used in order to evaluate the efficiency of the models are: False Rejection Rate(FRR) and the  False Acceptance Rate(FAR). The results have been organized into spreadsheets at the /Results directory for each database.
 
  # Requirements
