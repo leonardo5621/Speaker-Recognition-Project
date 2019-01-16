@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
-import GmmVerification as GND
+import Training-Verification as GND
 
 Path=input('Insert the directory containing the list of speakers')
 
