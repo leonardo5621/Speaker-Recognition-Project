@@ -26,5 +26,5 @@ The metrics used in order to evaluate the efficiency of the models are: False Re
 - numpy
 - matplotlib
 - pyaudio
--pydub
--pandas 
+- pydub
+- pandas 
