@@ -55,7 +55,7 @@ def get_Arguments():
 
     parser=argparse.ArgumentParser(description='Remove the Silence Parts from an Audio File')
     parser.add_argument('AudioFile',help='Name of the File to be processed')
-    parser.add_argument('-fform','--fileformat',help='Format of the File(default=wav)',action='store_const',default='wav')
+    parser.add_argument('-fform','--fileformat',help='Format of the File(default=wav)',default='wav')
     
     return parser.parse_args()
 
