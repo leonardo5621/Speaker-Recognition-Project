@@ -15,18 +15,21 @@ def ConvertWAV(audioPath,inpFormat,OneFile=True):
         AudioSegment.from_file(audioFile).export(newFileName,format='wav')
         os.chdir(currentDir)
     else:
-        ##List of the mp3 files
-        audioList=glob.glob(audioPath+'*.'+inpFormat)
-        ##Changing to the directory containing the mp3 files
-        os.chdir(os.path.dirname(audioPath))
-        for audioFile in audioList:
-            ##Name of the Audio File
-            bs=os.path.basename(audioFile)
-            FileName=os.path.split(audioFile)[1]
-            baseFileName=os.path.splitext(FileName)[0]
-            ##Name of the New file
-            newFileName=baseFileName+'.wav'
-            AudioSegment.from_file(bs,format=inpFormat).export(newFileName,format='wav')
-        os.chdir(currentDir)
-
+        try:
+            ##List of the audio files
+            audioList=glob.glob(audioPath+'*.'+inpFormat)
+            ##Changing to the directory containing the audio files
+            os.chdir(os.path.dirname(audioPath))
+            for audioFile in audioList:
+                ##Name of the Audio File
+                bs=os.path.basename(audioFile)
+                FileName=os.path.split(audioFile)[1]
+                baseFileName=os.path.splitext(FileName)[0]
+                ##Name of the New file
+                newFileName=baseFileName+'.wav'
+                AudioSegment.from_file(bs,format=inpFormat).export(newFileName,format='wav')
+            os.chdir(currentDir)
+        except FileNotFoundError:
+            os.chdir(currentDir)
+            print('File not Found')
             
