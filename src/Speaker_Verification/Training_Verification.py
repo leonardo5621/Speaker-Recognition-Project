@@ -4,7 +4,7 @@ import python_speech_features as psf
 import pickle
 from scipy.io import wavfile
 import os
-#import FeatureExtraction as FtE
+from .FeatureExtraction import *
 import pandas as pd
 
 if '__name__'=='__main__':
@@ -43,7 +43,7 @@ def TrainModel(TrainDirectory,ModelName,N_Components=80,Type='tied'):
             
     Model=GMM(N_Components,Type)
     dir=os.getcwd()        
-    FTS=FtE.Features(TrainDirectory)
+    FTS=Features(TrainDirectory)
     Model.fit(FTS)
     os.chdir(TrainDirectory)
     File=open(ModelName,'wb')

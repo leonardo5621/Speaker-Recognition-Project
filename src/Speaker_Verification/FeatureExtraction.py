@@ -1,7 +1,7 @@
 import python_speech_features as psf
 import numpy as np
 from os.path import join
-from os import listdir,chdir
+from os import listdir,chdir,getcwd
 from scipy.io import wavfile
 import python_speech_features as psf 
 
@@ -18,6 +18,7 @@ def readOne(SpeakerID,PATH):
 #Feature Extraction for All the Files in a Given Directory
 
 def Features(PATH):
+    currentDir=getcwd()
     chdir(PATH)
     FT=np.zeros((1,13))
     for files in listdir():
@@ -25,5 +26,5 @@ def Features(PATH):
             Audio=wavfile.read(files)
             Mfcc=psf.mfcc(Audio[1])
             FT=np.concatenate((FT,Mfcc))
-
+    chdir(currentDir)
     return FT
