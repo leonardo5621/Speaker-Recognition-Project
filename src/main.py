@@ -11,8 +11,6 @@ def get_arguments():
     #parser.add_argument('-UBM','--UniversalModel',help='Choice of which Universal model to be used(Required for Verification)')
     parser.add_argument('Speaker',help='Speaker Id to verify or train a new model')
     parser.add_argument('-aud','--Audio',default='audioDef',help='Audio File for Verification or Directory for Training if file option was selected on -audm argument')
-    parser.add_argument('-TT','--TrainedThresholds',help='Use the trained threshold for the speaker model instead of the standard adopted, which is zero'
-                        ,action='store_true')
     parser.add_argument('-ff','--fileformat',default='wav',help='Format of the Audio File(Default=wav)')
     parser.add_argument('-lf','--listfiles',action='store_true',help='if there is a list of files being processed')
     parser.add_argument('Audm',help='Method for delivering the audio to perform the verification(file/microphone)')
@@ -24,20 +22,19 @@ def Main():
     SpeakerId=arguments.Speaker
     AudioF=arguments.Audio
     #UnivModel=arguments.UniversalModel
-    TT=arguments.TrainedThresholds
     formatAudio=arguments.fileformat
     islist=arguments.listfiles
     if formatAudio!='wav':
         fileConvert.ConvertWAV(AudioF,formatAudio,OneFile=islist)
     if arguments.Audm=='file':
-        GND.Verification(SpeakerId,AudioF,TrainedThresh=TT)
+        GND.Verification(SpeakerId,AudioF)
     elif arguments.Audm=='microphone':
         recording=sd.rec(int(44100*5),samplerate=44100,channels=2)
         print('RECORDING')
         sd.wait()
         print('Recording Finished')
         wavfile.write('Verify.wav',44100,recording)
-        GND.Verification(SpeakerId,'Verify.wav',TrainedThresh=TT)
+        GND.Verification(SpeakerId,'Verify.wav')
     else:
         print('Invalid Method')
 

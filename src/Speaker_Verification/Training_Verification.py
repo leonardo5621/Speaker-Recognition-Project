@@ -9,16 +9,6 @@ import pandas as pd
 
 if '__name__'=='__main__':
 
-    if 'Threshold.csv' in os.listdir():
-        ThresholdList=pd.read_csv('Threshold.csv')
-        print('DataFrame Loaded')
-    else:
-        Inp=input('Do you want to create a new list for the Thresholds?(y/n)')
-        if Inp=='y':
-            Rows=len(os.listdir('Test'))
-            ThresholdList=pd.DataFrame(np.zeros((Rows,1)),os.listdir('Test'),columns=['Threshold'])
-            print('DataFrame Created')
-
     if 'UBMFile' in os.listdir():
         UBM=open('UBMFile','rb')
         U=pickle.load(UBM)
@@ -42,18 +32,18 @@ def TrainModel(TrainDirectory,ModelName,N_Components=80,Type='tied'):
     """
             
     Model=GMM(N_Components,Type)
-    dir=os.getcwd()        
+    direc=os.getcwd()        
     FTS=Features(TrainDirectory)
     Model.fit(FTS)
     os.chdir(TrainDirectory)
     File=open(ModelName,'wb')
     pickle.dump(Model,File)
     File.close() 
-    os.chdir(dir)
+    os.chdir(direc)
 
 
 
-def Verification(SPEAKER,Audio,ReturnTheta='n',UBM='UBM',TrainedThresh=False):
+def Verification(SPEAKER,Audio,ModelsDir='Speaker_Verification/AudioDataSet1_Models/',ReturnTheta='n',UBM='UBMFile'):
     
     """ Parameters of the Function
     
@@ -64,14 +54,12 @@ def Verification(SPEAKER,Audio,ReturnTheta='n',UBM='UBM',TrainedThresh=False):
     """
 
     if (isinstance(Audio,str) & isinstance(SPEAKER,str)):
-
-        if (SPEAKER in os.listdir()):
-            SPFile=open(SPEAKER,'rb')
-            Threshold=ThresholdList.loc[SPEAKER]['Threshold']
+        if (SPEAKER in os.listdir(ModelsDir)):
+            SPFile=open(ModelsDir+SPEAKER,'rb')
             ModelRequested=pickle.load(SPFile)
             SPFile.close()
             TestTrack=wavfile.read(Audio)
-            UBMFile=open(UBM,'rb')
+            UBMFile=open(ModelsDir+UBM,'rb')
             U = pickle.load(UBMFile)
             UBMFile.close()
             if (TestTrack[0]>20000):
@@ -80,30 +68,18 @@ def Verification(SPEAKER,Audio,ReturnTheta='n',UBM='UBM',TrainedThresh=False):
                 P2=U.score(MFCC)
                 Theta=P1-P2
 
-                if TrainedThresh:
-
-                    if (Theta>Threshold):
-                        if ReturnTheta=='y':
-                            return [1,Theta]
-                        else:
-                            return 1
+                if (Theta>0):
+                    if ReturnTheta=='y':
+                        return [1,Theta]
                     else:
-                        if ReturnTheta=='y':
-                            return [0,Theta]
-                        else:
-                            return 0
+                        print('Verification Confirmed')
+                        return 1
                 else:
-                    
-                    if (Theta>0):
-                        if ReturnTheta=='y':
-                            return [1,Theta]
-                        else:
-                            return 1
+                    if ReturnTheta=='y':
+                        return [0,Theta]
                     else:
-                        if ReturnTheta=='y':
-                            return [0,Theta]
-                        else:
-                            return 0
+                        print('Access Denied')
+                        return 0
                     
             else:
                 
