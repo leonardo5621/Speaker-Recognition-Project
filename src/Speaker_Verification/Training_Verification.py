@@ -5,6 +5,7 @@ import pickle
 from scipy.io import wavfile
 import os
 from .FeatureExtraction import *
+from .remove_Silence import *
 import pandas as pd
 
 if '__name__'=='__main__':
@@ -59,11 +60,12 @@ def Verification(SPEAKER,Audio,ModelsDir='Speaker_Verification/AudioDataSet1_Mod
             ModelRequested=pickle.load(SPFile)
             SPFile.close()
             TestTrack=wavfile.read(Audio)
+            TrackSL=SilenceRemoval(TestTrack[1],TestTrack[0])
             UBMFile=open(ModelsDir+UBM,'rb')
             U = pickle.load(UBMFile)
             UBMFile.close()
             if (TestTrack[0]>20000):
-                MFCC=psf.mfcc(TestTrack[1],TestTrack[0],winlen=0.01,winstep=0.0025)
+                MFCC=psf.mfcc(TrackSL,TestTrack[0],winlen=0.01,winstep=0.0025)
                 P1=ModelRequested.score(MFCC)
                 P2=U.score(MFCC)
                 Theta=P1-P2
@@ -83,7 +85,7 @@ def Verification(SPEAKER,Audio,ModelsDir='Speaker_Verification/AudioDataSet1_Mod
                     
             else:
                 
-                MFCC=psf.mfcc(TestTrack[1],TestTrack[0],winlen=0.025,winstep=0.01)
+                MFCC=psf.mfcc(TrackSL,TestTrack[0],winlen=0.025,winstep=0.01)
                 P1=ModelRequested.score(MFCC)
                 P2=U.score(MFCC)
                 Theta=P1-P2
