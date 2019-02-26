@@ -10,10 +10,12 @@ def ConvertWAV(audioPath,inpFormat,OneFile=True):
     if OneFile:
         audioDir,audioFile=os.path.split(audioPath)
         os.chdir(audioDir)
+        print(audioDir)
         baseName=os.path.splitext(os.path.basename(audioPath))[0]
         newFileName=baseName+'.wav'
         AudioSegment.from_file(audioFile).export(newFileName,format='wav')
         os.chdir(currentDir)
+        print('Conversion Done')
     else:
         try:
             ##List of the audio files

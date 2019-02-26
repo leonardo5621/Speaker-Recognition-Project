@@ -25,15 +25,22 @@ def Main():
     formatAudio=arguments.fileformat
     islist=arguments.listfiles
     if formatAudio!='wav':
-        fileConvert.ConvertWAV(AudioF,formatAudio,OneFile=islist)
+        print('Converting Audio')
+        fileConvert.ConvertWAV(AudioF,formatAudio)
+        SpName=AudioF.split('.')
+        newAudioName=SpName[0]+'.wav'
+    else:
+        newAudioName=AudioF
     if arguments.Audm=='file':
-        GND.Verification(SpeakerId,AudioF)
+        
+        GND.Verification(SpeakerId,newAudioName)
     elif arguments.Audm=='microphone':
-        recording=sd.rec(int(44100*5),samplerate=44100,channels=2)
+        sr=16000
+        recording=sd.rec(int(sr*5),samplerate=sr,channels=2)
         print('RECORDING')
         sd.wait()
         print('Recording Finished')
-        wavfile.write('Verify.wav',44100,recording)
+        wavfile.write('Verify.wav',sr,recording)
         GND.Verification(SpeakerId,'Verify.wav')
     else:
         print('Invalid Method')

@@ -44,7 +44,7 @@ def TrainModel(TrainDirectory,ModelName,N_Components=80,Type='tied'):
 
 
 
-def Verification(SPEAKER,Audio,ModelsDir='Speaker_Verification/AudioDataSet1_Models/',ReturnTheta='n',UBM='UBMFile'):
+def Verification(SPEAKER,Audio,ModelsDir='Speaker_Verification/AudioDataSet1_Models/',ReturnTheta='n',UBM='UBMFileN3'):
     
     """ Parameters of the Function
     
@@ -60,8 +60,9 @@ def Verification(SPEAKER,Audio,ModelsDir='Speaker_Verification/AudioDataSet1_Mod
             ModelRequested=pickle.load(SPFile)
             SPFile.close()
             TestTrack=wavfile.read(Audio)
-            TrackSL=SilenceRemoval(TestTrack[1],TestTrack[0])
+            #TrackSL=SilenceRemoval(TestTrack[1],TestTrack[0])
             UBMFile=open(ModelsDir+UBM,'rb')
+            TrackSL=TestTrack[1]
             U = pickle.load(UBMFile)
             UBMFile.close()
             if (TestTrack[0]>20000):
@@ -75,12 +76,16 @@ def Verification(SPEAKER,Audio,ModelsDir='Speaker_Verification/AudioDataSet1_Mod
                         return [1,Theta]
                     else:
                         print('Verification Confirmed')
+                        print(P1)
+                        print(P2)
                         return 1
                 else:
                     if ReturnTheta=='y':
                         return [0,Theta]
                     else:
                         print('Access Denied')
+                        print(P1)
+                        print(P2)
                         return 0
                     
             else:
@@ -93,17 +98,23 @@ def Verification(SPEAKER,Audio,ModelsDir='Speaker_Verification/AudioDataSet1_Mod
                     if ReturnTheta=='y':
                         return [1,Theta]
                     else:
+                        print('Verification Confirmed')
+                        print(P1)
+                        print(P2)
                         return 1
                 else:
                     if ReturnTheta=='y':
                         return [0,Theta]
                     else:
+                        print('Access Denied')
+                        print(P1)
+                        print(P2)
                         return 0
         else:
             print('Model not found')
     else:
         print('Incorrect Parameter')
-        
+     
 
 def AjustTheta(SPEAKER,SpeakersPath='Test'):
     
