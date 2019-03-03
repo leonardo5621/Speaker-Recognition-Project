@@ -2,3 +2,7 @@ NDOOR.py.save.txt
 *.wav
 LEOM
 NewUbm
+LibriSpeech
+NewUbm
+*.ipynb
+*.flac
