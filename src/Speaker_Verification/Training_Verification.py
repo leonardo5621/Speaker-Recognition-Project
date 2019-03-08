@@ -8,9 +8,10 @@ from .FeatureExtraction import *
 from .remove_Silence import *
 import pandas as pd
 import soundfile as sf
+import librosa
 
     
-def TrainModel(TrainDirectory,ModelName,Aformat='wav',N_Components=80,Type='tied'):
+def TrainModel(TrainDirectory,ModelName,Aformat='wav',N_Components=90,Type='tied'):
     
     """ Parameters of the Function
     
@@ -23,8 +24,14 @@ def TrainModel(TrainDirectory,ModelName,Aformat='wav',N_Components=80,Type='tied
     Model=GMM(N_Components,Type)
     CurrentDir=os.getcwd()        
     FTS=Features(TrainDirectory,Aformat)
+    dataType=FTS[1]
+    ch=FTS[2]
+    srate=FTS[3]
+    print(ch)
+    print(srate)
+    print(dataType)
     print('Features Extracted')
-    Model.fit(FTS)
+    Model.fit(FTS[0].transpose())
     print('Model Trained')
     os.chdir(TrainDirectory)
     os.chdir(CurrentDir)
@@ -36,11 +43,24 @@ def TrainModel(TrainDirectory,ModelName,Aformat='wav',N_Components=80,Type='tied
     DistInfo=['Mean','std dev']
     Idx=[ModelName]
     print(Dist)
-    NewDist=pd.DataFrame({'Name':ModelName,'Mean':Dist[0],'std dev':Dist[1]},index=[0])
     DistData=pd.read_csv('DistFrame.csv')
-    DistData=pd.concat([DistData,NewDist],sort=True)
-    DistData.to_csv('DistFrame.csv',index=False)
-
+    ##Check if the ModelName already exists in the DataFrame
+    L=len(DistData.loc[DistData['Name']==ModelName].index)
+    NewDist=pd.DataFrame({'Name':ModelName,'Mean':Dist[0],'std dev':Dist[1]},index=[L])
+    if L!=0:
+        i=input('The Model has already been registred, would you like to overwrite it?(y/n)')
+        if i=='y':
+            DistData=pd.concat([DistData,NewDist])
+            DistData.drop_duplicates('Name',keep='last',inplace=True)
+            DistData.to_csv('DistFrame.csv',index=False)
+    else:
+        DistData=pd.concat([DistData,NewDist],sort=True)
+        DistData.to_csv('DistFrame.csv',index=False)
+    AudioProps=pd.read_csv('AudioProperties.csv')
+    L2=len(DistData.loc[DistData['Name']==ModelName].index)
+    NewSpeaker=pd.DataFrame({'Name':ModelName,'SamplingRate':srate,'dtype':dataType,'channels':ch,'AudioFormat':Aformat},index=[L2])
+    AudioProps=pd.concat([AudioProps,NewSpeaker])
+    AudioProps.to_csv('AudioProperties.csv',index=False)
 
 def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/',UBM='UBMFileN3'):
     
@@ -57,15 +77,11 @@ def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/',UBM='UBMFileN3'):
             SPFile=open(ModelsDir+SPEAKER,'rb')
             ModelRequested=pickle.load(SPFile)
             SPFile.close()
-            TestTrack=sf.read(Audio)
+            TestTrack,srate=sf.read(Audio)
             #TrackSL=SilenceRemoval(TestTrack[1],TestTrack[0])
-            TrackSL=TestTrack[0]
-            if (TestTrack[1]>20000):
-                MFCC=psf.mfcc(TrackSL,TestTrack[1],winlen=0.01,winstep=0.004)
-            else:
-                MFCC=psf.mfcc(TrackSL,TestTrack[1])
+            MFCC=librosa.feature.mfcc(TestTrack,sr=srate,n_mfcc=13)
 
-            P1=ModelRequested.score(MFCC)
+            P1=ModelRequested.score(MFCC.transpose())
 
             DistData=pd.read_csv('DistFrame.csv')
             DistData.sort_values('Name',inplace=True)

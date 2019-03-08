@@ -5,6 +5,7 @@ from os import listdir,chdir,getcwd
 from scipy.io import wavfile
 import python_speech_features as psf
 import soundfile as sf
+import librosa
 
 #Get the Tracks of a Single Speaker
 def readOne(SpeakerID,PATH):
@@ -21,15 +22,18 @@ def readOne(SpeakerID,PATH):
 def Features(PATH,Aformat):
     currentDir=getcwd()
     chdir(PATH)
-    FT=np.zeros((1,13))
+    FT=np.zeros((13,1))
+    #DEFAULT PARAMETERS
+    datatype='float64'
+    ch=1
+    sr=44100
     for files in listdir():
         if files.endswith('.'+Aformat):
             Audio=sf.read(files)
-            if Audio[1]>20000:
-                Mfcc=psf.mfcc(Audio[0],samplerate=Audio[1],winlen=0.01,winstep=0.004)
-            else:
-                Mfcc=psf.mfcc(Audio[0],samplerate=Audio[1],winlen=0.01,winstep=0.004)
-
-            FT=np.concatenate((FT,Mfcc))
+            dataType=Audio[0].dtype
+            ch=len(Audio[0].shape)
+            sr=Audio[1]
+            Mfcc=librosa.feature.mfcc(Audio[0],sr=Audio[1],n_mfcc=13)           
+            FT=np.concatenate((FT,Mfcc),axis=1)
     chdir(currentDir)
-    return FT
+    return [FT,dataType,ch,sr]
