@@ -3,10 +3,10 @@ import sounddevice as sd
 from scipy.io import wavfile
 import Speaker_Verification.Training_Verification as GND
 import Speaker_Verification.FeatureExtraction as FtE
-import Speaker_Verification.format_to_wav as fileConvert
 import soundfile as sf
 import pandas as pd
 import noisereduce as nr
+import detect_voice
 
 def get_arguments():
 
@@ -36,15 +36,18 @@ def Main():
             ch=int(AudioProps.channels[AudioProps.index[0]])
             dataType=str(AudioProps.dtype[AudioProps.index[0]])
             af=str(AudioProps.AudioFormat[AudioProps.index[0]])
-            recording=sd.rec(int(sr*5),samplerate=sr,channels=ch,dtype=dataType)
+            recording=sd.rec(int(sr*6),samplerate=sr,channels=ch,dtype=dataType)
             print('RECORDING')
             sd.wait()
             print('Recording Finished')
             noise,sn=sf.read('noise.flac')
             reducenoise=nr.reduce_noise(audio_clip=recording.flatten(),noise_clip=noise,verbose=False)
             fileName='Verify'+'.'+af
-            sf.write(fileName,reducenoise,sr)
-            GND.Verification(SpeakerId,fileName)
+            if detect_voice.is_speech(reducenoise,sr):    
+                sf.write(fileName,reducenoise,sr)
+                GND.Verification(SpeakerId,fileName)
+            else:
+                print('Voice Activity was not Detected')
         else:
             print('Invalid Method')
     elif opt=='train':
