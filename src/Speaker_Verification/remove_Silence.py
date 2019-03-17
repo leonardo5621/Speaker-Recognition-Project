@@ -1,8 +1,6 @@
 import numpy as np
-from scipy.io import wavfile
-import argparse
 
-def SilenceRemoval(AudioSignal,sr):
+def SilenceRemoval(AudioSignal,sr,threshold_only=False):
     dataType=AudioSignal.dtype
     Signal=AudioSignal
     ##Frame Length
@@ -14,6 +12,9 @@ def SilenceRemoval(AudioSignal,sr):
     nf=int(np.ceil(len(Signal)/spf))
     #Setting a silence threshold
     threshold=np.amax(Signal)*.003
+    #Option of only returning the voice thresold
+    if threshold_only:
+        return threshold
     #length to be padded
     toPad=int((nf*spf)-L)
     padZeros=np.zeros(toPad)
@@ -56,23 +57,4 @@ def SilenceRemoval(AudioSignal,sr):
         AudioOut2=np.reshape(AudioOut2,(int(AudioOut2.size),1))
         AudioChan2=np.asarray(AudioOut2,dtype=dataType)
         AudioReconst=np.concatenate((AudioChan1,AudioChan2),axis=1)
-        return AudioReconst
-
-def get_Arguments():
-
-    parser=argparse.ArgumentParser(description='Remove the Silence Parts from an Audio File')
-    parser.add_argument('AudioFile',help='Name of the File to be processed')
-    parser.add_argument('-fform','--fileformat',help='Format of the File(default=wav)',default='wav')
-    
-    return parser.parse_args()
-
-def Main():
-
-    Args=get_Arguments()
-    sr,AudioData=wavfile.read(Args.AudioFile)
-    AudioProcessed=SilenceRemoval(AudioData,sr)
-    wavfile.write('NewFile.wav',sr,AudioProcessed)
-
-if __name__=='__main__':
-    Main()
-    
+        return AudioReconst,

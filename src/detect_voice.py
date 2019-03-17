@@ -12,6 +12,23 @@ def Framing(Signal,srate,FrameSpan=0.01):
     
     return FramedSignal,NFrames,FrameLen
 
+def threshold_pass(signal,sr,parameter_signal,threshold=0.05,FrameLen=0.025):
+    L=len(signal)
+    coef_thresh=0.3
+    Voice_limit=np.amax(parameter_signal)*threshold
+    FS,NF,FL=Framing(signal,sr,FrameSpan=FrameLen)
+    indexes=list()
+        #Finding the Silent Frames
+    for i in range(0,NF):
+        if np.amax(FS[i])>Voice_limit:
+            indexes.append(i)
+    coefficient=len(indexes)/NF
+    if coefficient>=coef_thresh:
+        return True
+    else:
+        return False
+    
+
 def is_speech(signal,srate):
     Threshold=0.12
     Energies=[]

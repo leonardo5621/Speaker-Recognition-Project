@@ -4,14 +4,14 @@ import python_speech_features as psf
 import pickle
 from scipy.io import wavfile
 import os
-from .FeatureExtraction import *
+from .Feature_Extraction import *
 from .remove_Silence import *
 import pandas as pd
 import soundfile as sf
 import librosa
 
     
-def TrainModel(TrainDirectory,ModelName,Aformat='wav',N_Components=90,Type='tied'):
+def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=90,Type='tied'):
     
     """ Parameters of the Function
     
@@ -27,9 +27,6 @@ def TrainModel(TrainDirectory,ModelName,Aformat='wav',N_Components=90,Type='tied
     dataType=FTS[1]
     ch=FTS[2]
     srate=FTS[3]
-    print(ch)
-    print(srate)
-    print(dataType)
     print('Features Extracted')
     Model.fit(FTS[0].transpose())
     print('Model Trained')
@@ -39,7 +36,7 @@ def TrainModel(TrainDirectory,ModelName,Aformat='wav',N_Components=90,Type='tied
     pickle.dump(Model,File)
     File.close()
     print('Model File Created')
-    Dist=AjustTheta(ModelName,TrainDirectory)
+    Dist=Ajust_Theta(ModelName,TrainDirectory)
     DistInfo=['Mean','std dev']
     Idx=[ModelName]
     print(Dist)
@@ -102,7 +99,7 @@ def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/',UBM='UBMFileN3'):
     else:
         print('Incorrect Parameter')
         
-def GetScore(SPEAKER,Audio,ModelsDir='AcusticModels/'):
+def Get_Score(SPEAKER,Audio,ModelsDir='AcusticModels/'):
     SPFile=open(ModelsDir+SPEAKER,'rb')
     ModelRequested=pickle.load(SPFile)
     SPFile.close()
@@ -117,7 +114,7 @@ def GetScore(SPEAKER,Audio,ModelsDir='AcusticModels/'):
         P1=ModelRequested.score(MFCC)
         return P1
 
-def AjustTheta(SPEAKER,PathToAudio):
+def Ajust_Theta(SPEAKER,PathToAudio):
     
     """ Parameters of the Function
     
@@ -130,7 +127,7 @@ def AjustTheta(SPEAKER,PathToAudio):
         for Trial in os.listdir(PathToAudio):
             
             try:
-                ThetaList.append(GetScore(SPEAKER,PathToAudio+'/'+Trial))
+                ThetaList.append(Get_Score(SPEAKER,PathToAudio+'/'+Trial))
             except RuntimeError:
                 pass
             

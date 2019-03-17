@@ -2,11 +2,16 @@ import argparse
 import sounddevice as sd
 from scipy.io import wavfile
 import Speaker_Verification.Training_Verification as GND
-import Speaker_Verification.FeatureExtraction as FtE
+import Speaker_Verification.Feature_Extraction as FtE
 import soundfile as sf
 import pandas as pd
 import noisereduce as nr
 import detect_voice
+import os
+
+def get_sample(audio='sample.flac',audio_format='.flac'):
+    audio_signal,srate=sf.read(audio)
+    return audio_signal
 
 def get_arguments():
 
@@ -14,7 +19,7 @@ def get_arguments():
     parser.add_argument('Option',help='(train/verify) Choose between training a new model or performing the verification of an audio')
     parser.add_argument('Speaker',help='Speaker Id to Verify or Train a new model')
     parser.add_argument('-A','--Audio',default='audioDef',help='Audio File for Verification or Directory for Training if file option was selected on -audm argument')
-    parser.add_argument('-ff','--fileformat',default='wav',help='Format of the Audio File(Default=wav)')
+    parser.add_argument('-ff','--fileformat',default='.wav',help='Format of the Audio File(Default=.wav)')
     parser.add_argument('Method',help='Method for delivering the audio to perform the verification(file/microphone)')
     return parser.parse_args()
 
@@ -43,7 +48,8 @@ def Main():
             noise,sn=sf.read('noise.flac')
             reducenoise=nr.reduce_noise(audio_clip=recording.flatten(),noise_clip=noise,verbose=False)
             fileName='Verify'+'.'+af
-            if detect_voice.is_speech(reducenoise,sr):    
+            paramSignal=get_sample()
+            if detect_voice.threshold_pass(reducenoise,sr,paramSignal):    
                 sf.write(fileName,reducenoise,sr)
                 GND.Verification(SpeakerId,fileName)
             else:
@@ -51,7 +57,7 @@ def Main():
         else:
             print('Invalid Method')
     elif opt=='train':
-        GND.TrainModel(AudioF,SpeakerId,Aformat=af)
+        GND.Train_Model(AudioF,SpeakerId,Aformat=af)
     else:
         print('Invalid Option')
 
