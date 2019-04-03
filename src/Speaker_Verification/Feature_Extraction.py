@@ -6,6 +6,7 @@ from scipy.io import wavfile
 import python_speech_features as psf
 import soundfile as sf
 import librosa
+from sklearn import preprocessing
 
 #Get the Tracks of a Single Speaker
 def readOne(SpeakerID,PATH):
@@ -22,7 +23,7 @@ def readOne(SpeakerID,PATH):
 def Features(PATH,Aformat):
     currentDir=getcwd()
     chdir(PATH)
-    FT=np.zeros((13,1))
+    FT=np.asarray(())
     #DEFAULT PARAMETERS
     datatype='float64'
     ch=1
@@ -33,7 +34,10 @@ def Features(PATH,Aformat):
             dataType=Audio[0].dtype
             ch=len(Audio[0].shape)
             sr=Audio[1]
-            Mfcc=librosa.feature.mfcc(Audio[0],sr=Audio[1],n_mfcc=13)           
-            FT=np.concatenate((FT,Mfcc),axis=1)
+            Mfcc=librosa.feature.mfcc(Audio[0],sr=Audio[1],n_mfcc=20).transpose()
+            Mfcc_Normalized=preprocessing.scale(Mfcc)
+            Delta=librosa.feature.delta(Mfcc_Normalized)
+            Features=np.hstack((Mfcc_Normalized,Delta))
+            FT=Features if FT.size==0 else np.vstack((FT,Features))            
     chdir(currentDir)
     return [FT,dataType,ch,sr]

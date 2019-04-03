@@ -1,3 +1,5 @@
 Name,SamplingRate,dtype,channels,AudioFormat
 leo,44100,float32,1,flac
 leooz,44100,float64,1,flac
+leo,44100,float64,1,flac
+leo,44100,float64,1,flac

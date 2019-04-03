@@ -11,7 +11,7 @@ import soundfile as sf
 import librosa
 
     
-def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=90,Type='tied'):
+def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=70,Type='diag'):
     
     """ Parameters of the Function
     
@@ -28,7 +28,7 @@ def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=90,Type='tie
     ch=FTS[2]
     srate=FTS[3]
     print('Features Extracted')
-    Model.fit(FTS[0].transpose())
+    Model.fit(FTS[0])
     print('Model Trained')
     os.chdir(TrainDirectory)
     os.chdir(CurrentDir)
@@ -36,30 +36,31 @@ def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=90,Type='tie
     pickle.dump(Model,File)
     File.close()
     print('Model File Created')
-    Dist=Ajust_Theta(ModelName,TrainDirectory)
-    DistInfo=['Mean','std dev']
-    Idx=[ModelName]
-    print(Dist)
-    DistData=pd.read_csv('DistFrame.csv')
+    return Model.bic(FTS[0])
+    #Dist=Ajust_Theta(ModelName,TrainDirectory)
+    #DistInfo=['Mean','std dev']
+    #Idx=[ModelName]
+    #print(Dist)
+    #DistData=pd.read_csv('DistFrame.csv')
     ##Check if the ModelName already exists in the DataFrame
-    L=len(DistData.loc[DistData['Name']==ModelName].index)
-    NewDist=pd.DataFrame({'Name':ModelName,'Mean':Dist[0],'std dev':Dist[1]},index=[L])
-    if L!=0:
-        i=input('The Model has already been registred, would you like to overwrite it?(y/n)')
-        if i=='y':
-            DistData=pd.concat([DistData,NewDist])
-            DistData.drop_duplicates('Name',keep='last',inplace=True)
-            DistData.to_csv('DistFrame.csv',index=False)
-    else:
-        DistData=pd.concat([DistData,NewDist],sort=True)
-        DistData.to_csv('DistFrame.csv',index=False)
-    AudioProps=pd.read_csv('AudioProperties.csv')
-    L2=len(DistData.loc[DistData['Name']==ModelName].index)
-    NewSpeaker=pd.DataFrame({'Name':ModelName,'SamplingRate':srate,'dtype':dataType,'channels':ch,'AudioFormat':Aformat},index=[L2])
-    AudioProps=pd.concat([AudioProps,NewSpeaker])
-    AudioProps.to_csv('AudioProperties.csv',index=False)
+    #L=len(DistData.loc[DistData['Name']==ModelName].index)
+    #NewDist=pd.DataFrame({'Name':ModelName,'Mean':Dist[0],'std dev':Dist[1]},index=[L])
+    #if L!=0:
+    #    i=input('The Model has already been registred, would you like to overwrite it?(y/n)')
+    #    if i=='y':
+    #        DistData=pd.concat([DistData,NewDist])
+    #        DistData.drop_duplicates('Name',keep='last',inplace=True)
+    #        DistData.to_csv('DistFrame.csv',index=False)
+    #else:
+    #    DistData=pd.concat([DistData,NewDist],sort=True)
+    #    DistData.to_csv('DistFrame.csv',index=False)
+    #AudioProps=pd.read_csv('AudioProperties.csv')
+    #L2=len(DistData.loc[DistData['Name']==ModelName].index)
+    #NewSpeaker=pd.DataFrame({'Name':ModelName,'SamplingRate':srate,'dtype':dataType,'channels':ch,'AudioFormat':Aformat},index=[L2])
+    #AudioProps=pd.concat([AudioProps,NewSpeaker])
+    #AudioProps.to_csv('AudioProperties.csv',index=False)
 
-def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/',UBM='UBMFileN3'):
+def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/'):
     
     """ Parameters of the Function
     
@@ -76,17 +77,21 @@ def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/',UBM='UBMFileN3'):
             SPFile.close()
             TestTrack,srate=sf.read(Audio)
             #TrackSL=SilenceRemoval(TestTrack[1],TestTrack[0])
-            MFCC=librosa.feature.mfcc(TestTrack,sr=srate,n_mfcc=13)
+            MFCC=librosa.feature.mfcc(TestTrack,sr=srate,n_mfcc=20).transpose()
+            MFCC_N=preprocessing.scale(MFCC)
+            delta=librosa.feature.delta(MFCC_N)
+            Features=np.hstack((MFCC_N,delta))
+            for FT in Features:
+                P1=ModelRequested.score(FT)
+                print(P1)
 
-            P1=ModelRequested.score(MFCC.transpose())
+            #DistData=pd.read_csv('DistFrame.csv')
+            #DistData.sort_values('Name',inplace=True)
+            #DistData.drop_duplicates(subset='Name',inplace=True,keep='last')
+            #Mean=float(DistData.loc[DistData['Name']==SPEAKER].Mean)
+            #Sigma=float(DistData.loc[DistData['Name']==SPEAKER]['std dev'])
 
-            DistData=pd.read_csv('DistFrame.csv')
-            DistData.sort_values('Name',inplace=True)
-            DistData.drop_duplicates(subset='Name',inplace=True,keep='last')
-            Mean=float(DistData.loc[DistData['Name']==SPEAKER].Mean)
-            Sigma=float(DistData.loc[DistData['Name']==SPEAKER]['std dev'])
-
-            FinalScore=P1-(Mean-1.5*Sigma)
+            FinalScore=P1
 
             if FinalScore>0:
                 print('Verification Confirmed')
@@ -104,15 +109,12 @@ def Get_Score(SPEAKER,Audio,ModelsDir='AcusticModels/'):
     ModelRequested=pickle.load(SPFile)
     SPFile.close()
     TestTrack=sf.read(Audio)
-    TrackSL=TestTrack[0]
-    if (TestTrack[1]>20000):
-        MFCC=psf.mfcc(TrackSL,TestTrack[1],winlen=0.01,winstep=0.004)
-        P1=ModelRequested.score(MFCC)
-        return P1
-    else:
-        MFCC=psf.mfcc(TrackSL,TestTrack[1])
-        P1=ModelRequested.score(MFCC)
-        return P1
+    MFCC=librosa.feature.mfcc(TestTrack[0],TestTrack[1],n_mfcc=20).transpose()
+    MFCC_N=preprocessing.scale(MFCC)
+    delta=librosa.feature.delta(MFCC_N)
+    Features=np.hstack((MFCC_N,delta))
+    P1=ModelRequested.score(Features)
+    return P1
 
 def Ajust_Theta(SPEAKER,PathToAudio):
     
@@ -131,9 +133,9 @@ def Ajust_Theta(SPEAKER,PathToAudio):
             except RuntimeError:
                 pass
             
-        Results=np.array(ThetaList)       
+        Results=np.array(ThetaList)
         DistParams=np.array([Results.mean(),Results.std()])        
-        return DistParams
+        return DIstParams
 
     
     
