@@ -1,0 +1,170 @@
+#:kivy 1.10.1
+
+<Manager>:
+    Menu:
+        name:'menu'
+    About:
+        name:'aboutapp' 
+    Login:
+        name:'login'
+    Register:
+        name:'reg'
+
+<Menu>:
+    BoxLayout:
+        id:box
+        orientation: 'vertical'
+        ActionBar:
+            background_image:'blank.png'
+            background_color: 0,0,0.6,0.8
+            ActionView:
+                ActionPrevious:
+                    id:prev
+                    with_previous:False
+                ActionButton:
+                    text:'Sair'
+                    on_release:app.stop()
+        BoxLayout:
+            canvas:
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+                    Color:
+                        rgba: 0.1,0,0,1
+            padding: 150
+            spacing: 40
+            orientation: 'vertical'
+            Button:
+                text: 'Acesso'
+                on_release:app.root.current='login'
+            Button:
+                text: 'Cadastro'
+                on_release: app.root.current='reg'
+            Button:
+                text: 'Sobre o Aplicativo'
+                on_release: app.root.current='aboutapp'
+<About>:
+    BoxLayout:
+        orientation:'vertical'
+        ActionBar:
+            background_image:'blank.png'
+            background_color:0,0,0.6,0.7
+            ActionView:
+                ActionPrevious:
+                    on_release:app.root.current='menu'
+                ActionButton:
+                    text:'Sair'
+                    on_release:app.stop()
+
+        ScrollView:
+            BoxLayout:
+                id:box
+                orientation:'vertical'
+
+<Login>:
+    BoxLayout:
+        padding:200
+        spacing:50
+        orientation:'vertical'
+        BoxLayout:
+            orientation:'horizontal'
+            Label:
+                text:'Usuario'
+                font_size:30
+            TextInput:
+                text:''
+                multiline:False
+        BoxLayout:
+            orientation:'horizontal'
+            Label:
+                text:'Senha'
+                font_size:30
+            TextInput:
+                text:''
+                multiline:False
+        Button:
+            text:'Login'                
+<Description>:
+    pos: self.pos
+    canvas.before:
+        Rectangle:
+            size: self.size
+            pos:self.pos
+            
+   # Image:
+    #    source:'wavelet.jpg'
+     #   center:self.parent.center
+      #  size:100,300
+       # allow_stretch: True
+       # keep_ratio: True
+       # size_hint_y: None
+       # size_hint_x: None
+       # width: self.parent.width
+       # height: self.parent.width/self.image_ratio
+
+<Register>:
+    BoxLayout:
+        canvas.before:
+            Rectangle:
+                pos:self.pos
+                size:self.size
+                source:'wave.png'
+        orientation:'vertical'
+        ActionBar:
+            background_image:'blank.png'
+            background_color:0,0,0.6,0.7
+            ActionView:
+                ActionPrevious:
+                    on_release:app.root.current='menu'
+                ActionButton:
+                    text:'Sair'
+                    on_release:app.stop()
+
+        BoxLayout:
+            id:boxreg
+            orientation:'vertical'
+            padding:100
+            spacing:50
+            Label:
+                size_hint_y:None
+                #color:0.1,0.1,0.1,1
+                height:60
+                text:'Insira seus Dados Abaixo'
+                font_size:30
+                #canvas.before:
+                 #   Color:
+                  #      rgba: 1,1,1, 1
+                   # Rectangle:
+                    #    pos: self.pos
+                     #    size: self.size
+            BoxLayout:
+                size_hint_y:None
+                size:self.width,30
+                orientation:'horizontal'
+                Label:
+                    text:'Nome'
+                    font_size:20
+                TextInput:
+                    text:''
+                    multiline:False
+            BoxLayout:
+                size_hint_y:None
+                size:self.width,30
+                orientation:'horizontal'
+                Label:
+                    text:'Email'
+                    font_size:20
+                TextInput:
+                    text:''
+                    multiline:False
+            BoxLayout:
+                size_hint_y:None
+                size:self.width,30
+                orientation:'horizontal'
+                Label:
+                    text:'Telefone'
+                    font_size:20
+                TextInput:
+                    text:''
+                    multiline:False
+            
