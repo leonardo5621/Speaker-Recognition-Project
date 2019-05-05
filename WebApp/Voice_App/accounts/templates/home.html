@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+<!DOCTYPE html>
+
+<html>
+    <head>Home</head>
+
+    <body>
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!, how are you doing?
+ <p><a href="{% url 'password_reset' %}">reset password</a></p>
+  {% else %}
+  <p>You are not logged in yet</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+
+    </body>
+
+
+</html>

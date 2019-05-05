@@ -1,0 +1,31 @@
+
+<!doctype html>
+
+<html lang="en">
+
+    <head>
+        
+       <title>Home</title>
+       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+       <meta charset="utf-8">
+       <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/">
+       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
+    </head>
+
+    <body>
+
+        <div class="container">
+  <!-- Content here -->
+{% if user.is_authenticated %}
+  Hi,{{ user.username }}!
+  <p><a href="{% url 'password_reset' %}">reset password</a></p>
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in yet </p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+        </div>
+    </body>
+
+
+</html>

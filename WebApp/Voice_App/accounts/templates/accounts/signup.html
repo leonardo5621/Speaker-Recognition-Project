@@ -1,0 +1,31 @@
+{% extends 'accounts/template_app.html'%}
+
+<!-- <!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Sign Up</title>
+    
+    </head>
+    <body>
+    
+        <h1>Sign Up</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+    <button type="submit">Sign up</button>
+
+    
+    
+    </body>
+
+</html> 
+-->
+{% block content%}
+ <h1>Sign Up</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+    <button type="submit" class="btn">Sign up</button>
+        </form>
+{% endblock %}
