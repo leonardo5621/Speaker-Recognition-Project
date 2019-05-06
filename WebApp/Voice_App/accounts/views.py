@@ -1,13 +1,20 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
-from django.views import generic
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import UserSignup
 
-class SignUp(generic.CreateView):
-    form_class= UserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'accounts/signup.html'
+def register(request):
+    if request.method == 'POST':
+        form = UserSignup(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Conta Criada Com Sucesso!')
+            return redirect('home')
+    else:
+        form = UserSignup()
+
+    return render(request, 'accounts/signup.html', {'form': form})
 
 def Home(request):
     return render(request, 'accounts/home_template.html')
