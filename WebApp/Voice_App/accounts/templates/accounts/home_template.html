@@ -79,7 +79,8 @@
     <h1>Projeto de Controle de Acesso por Verificação de Voz</h1>
     <p class="lead">Plataforma do Sistema.</p>
 
-    {% if user.is_authenticated %}
+    {% if request.user.is_authenticated %}
+    <h2> Welcome {{ request.user.username}}</h2>
     <a type="button" class="btn btn-primary" href="{% url 'profile'%}" >Perfil</a>
     <a type="button" class="btn btn-danger" href="{% url 'logout'%}" >Logout</a>
     {% else %}

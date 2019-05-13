@@ -1,5 +1,19 @@
 {%extends 'accounts/profile.html'%}
+{% load crispy_forms_tags%}
+{% block myname%}
+
+{{ user.username }}
+
+{% endblock %}
 
 {% block content %}
 <h1>Hi! {{ user.username }}</h1>
+
+   <form method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            {{u_form|crispy }}
+            {{p_form|crispy}}
+    <button type="submit" class="btn">Atualizar</button>
+        </form>
+
 {% endblock %}
