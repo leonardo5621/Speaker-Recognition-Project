@@ -1,5 +1,6 @@
 {%extends 'accounts/profile.html'%}
 {% load crispy_forms_tags%}
+{% load static %}
 {% block myname%}
 
 {{ user.username }}
@@ -15,5 +16,10 @@
             {{p_form|crispy}}
     <button type="submit" class="btn">Atualizar</button>
         </form>
+        {{data|safe}}
+
+
+
+
 
 {% endblock %}

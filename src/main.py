@@ -2,7 +2,7 @@ import argparse
 import sounddevice as sd
 from scipy.io import wavfile
 import Speaker_Verification.Training_Verification as GND
-import Speaker_Verification.Feature_Extraction as FtE
+import Speaker_Verification.utils as utils
 import soundfile as sf
 import pandas as pd
 import noisereduce as nr

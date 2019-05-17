@@ -4,12 +4,10 @@ import python_speech_features as psf
 import pickle
 from scipy.io import wavfile
 import os
-from .Feature_Extraction import *
-from .remove_Silence import *
 import pandas as pd
 import soundfile as sf
 import librosa
-
+from .utils import *
     
 def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=70,Type='diag'):
     
@@ -69,6 +67,7 @@ def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/'):
     -ReturnTheta: Decides whether or not the function gives back the value of Theta, which is the difference between the scores of the Audio in the Speaker Model and in the Universal Model
     -UBM: Which Universal model to be used for the Verification
     """
+    full_path = '/home/leonardo/Speaker-Recognition-Project/WebApp/Voice_App/profiles_access'
 
     if (isinstance(Audio,str) & isinstance(SPEAKER,str)):
         if (SPEAKER in os.listdir(ModelsDir)):
@@ -76,7 +75,6 @@ def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/'):
             ModelRequested=pickle.load(SPFile)
             SPFile.close()
             TestTrack,srate=sf.read(Audio)
-            #TrackSL=SilenceRemoval(TestTrack[1],TestTrack[0])
             MFCC=librosa.feature.mfcc(TestTrack,sr=srate,n_mfcc=20).transpose()
             MFCC_N=preprocessing.scale(MFCC)
             delta=librosa.feature.delta(MFCC_N)
@@ -96,6 +94,7 @@ def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/'):
             if FinalScore>0:
                 print('Verification Confirmed')
                 print(FinalScore)
+
             else:
                 print('Access Denied')
                 print(FinalScore)

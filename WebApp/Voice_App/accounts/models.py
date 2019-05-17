@@ -4,12 +4,13 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    birthday = models.DateField()
+    birthday = models.DateField(null=True)
     image = models.ImageField(default='blank.jpg', upload_to='profile_pics')
+
     def __str__(self):
         return f'{self.user.username}'
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         img = Image.open(self.image.path)
 
         if img.height>300 or img.width>300:
@@ -18,12 +19,12 @@ class Profile(models.Model):
             img.save(self.image.path)
 
 
-class Product(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.DecimalField(max_digits=9, decimal_places=2)
-
-    def __str__(self):
-        return self.name
+#class Product(models.Model):
+#    name = models.CharField(max_length=50)
+#    price = models.DecimalField(max_digits=9, decimal_places=2)
+#
+#    def __str__(self):
+#        return self.name
 
    
   
