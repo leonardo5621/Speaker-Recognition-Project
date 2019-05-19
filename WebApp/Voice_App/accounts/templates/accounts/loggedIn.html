@@ -9,16 +9,18 @@
 
 {% block content %}
 <h1>Hi! {{ user.username }}</h1>
-
+<div class='form-group'>
    <form method="post" enctype="multipart/form-data" >
             {% csrf_token %}
             {{u_form|crispy }}
             {{p_form|crispy}}
     <button type="submit" class="btn">Atualizar</button>
         </form>
+   </div>
+
+        <div class='table-responsive'>
         {{data|safe}}
-
-
+        </div>
 
 
 

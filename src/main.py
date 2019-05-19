@@ -45,15 +45,11 @@ def Main():
             print('RECORDING')
             sd.wait()
             print('Recording Finished')
-            noise,sn=sf.read('noise.flac')
-            reducenoise=nr.reduce_noise(audio_clip=recording.flatten(),noise_clip=noise,verbose=False)
-            fileName='Verify'+'.'+af
-            paramSignal=get_sample()
-            if detect_voice.threshold_pass(reducenoise,sr,paramSignal):    
-                sf.write(fileName,reducenoise,sr)
-                GND.Verification(SpeakerId,fileName)
-            else:
-                print('Voice Activity was not Detected')
+            fileName='Verify'+'.'+af       
+            sf.write(fileName,recording,sr)
+            GND.Verification(SpeakerId,fileName)
+  
+   
         else:
             print('Invalid Method')
     elif opt=='train':

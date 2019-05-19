@@ -17,9 +17,9 @@ def create_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
-    user_dir = 'profiles_access'
+    user_dir = 'profile_access'
     name = instance.username
-    path_to_file = '{}/{}.csv'.format(user_dir, name)
+    path_to_file = 'media/{0}/{1}/{1}.csv'.format(user_dir, name)
     instance.profile.save()
     if os.path.isfile(path_to_file):  
         pass
@@ -36,6 +36,7 @@ def save_profile(sender, instance, **kwargs):
         access_data = pd.DataFrame(np.zeros((3,1)),index=mlindex, columns=cols)
         try:
             print('Criando DataFrame')
-            access_data.to_csv(path_to_file, index_col=['A','B'])
+            access_data.to_csv(path_to_file, index_label=['A','B'])
         except FileNotFoundError:
+            print(os.getcwd())
             print('Erro')
