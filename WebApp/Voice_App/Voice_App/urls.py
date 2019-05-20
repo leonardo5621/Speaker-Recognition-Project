@@ -26,7 +26,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
 #    path('', TemplateView.as_view(template_name='accounts/home_template.html'), name='home'),
-    path('about', TemplateView.as_view(template_name='accounts/About.html'), name='about')
+    path('about', TemplateView.as_view(template_name='accounts/About.html'), name='about'),
+    path('gmmodels/', include('create_gmm.urls') )
 ]
 
 if settings.DEBUG:

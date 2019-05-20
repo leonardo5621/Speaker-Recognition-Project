@@ -49,11 +49,20 @@
 </li> -->
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções</a>
-        <div class="dropdown-menu" aria-labelledby="dropdown01">
-            <a class="dropdown-item" href="{% url 'login'%}">Login</a>
-            <a class="dropdown-item" href="{% url 'signup'%}">Criar Conta</a>
+     {% if request.user.is_authenticated %}
+      <div class="dropdown-menu" aria-labelledby="dropdown01">
           <a class="dropdown-item" href="#">Documentação</a>
         </div>
+
+       {% else%}
+
+        <div class="dropdown-menu" aria-labelledby="dropdown01">
+            <a class="dropdown-item" href="{% url 'login'%}">Login</a>
+            <a class="dropdown-item" href="{% url 'signup' %}">Criar Conta</a>
+          <a class="dropdown-item" href="#">Documentação</a>
+        </div>
+
+    {%endif%}      
       </li>
     </ul>
 <!--    <form class="form-inline my-2 my-lg-0">
@@ -83,6 +92,13 @@
     <h2> Welcome {{ request.user.username}}</h2>
     <a type="button" class="btn btn-primary" href="{% url 'profile'%}" >Perfil</a>
     <a type="button" class="btn btn-danger" href="{% url 'logout'%}" >Logout</a>
+
+
+
+    <div id='get_space'>
+         <h2>Crie seu Modelo Acústico para o Acesso</h2>
+    <a type="button" class="btn btn-success" href="{% url 'create-model'%}" >Criar Modelo</a>
+    </div>
     {% else %}
     <a type="button" href="{% url 'login' %}" class="btn btn-primary">Login</a>
     {% endif %}

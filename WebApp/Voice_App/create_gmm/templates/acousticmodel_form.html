@@ -1,0 +1,13 @@
+{% extends 'create_gmm/template_app.html'%}
+
+
+{% load crispy_forms_tags %}
+{% block content%}
+ <h1>Crie o Modelo Acústico para Acesso</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+    <button type="submit" class="btn">Criar</button>
+        </form>
+{% endblock %}
+

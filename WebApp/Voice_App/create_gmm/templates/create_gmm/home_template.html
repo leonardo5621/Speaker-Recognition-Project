@@ -49,20 +49,11 @@
 </li> -->
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções</a>
-       {% if request.user.is_authenticated %}
-      <div class="dropdown-menu" aria-labelledby="dropdown01">
-          <a class="dropdown-item" href="#">Documentação</a>
-        </div>
-
-       {% else%}
-
         <div class="dropdown-menu" aria-labelledby="dropdown01">
             <a class="dropdown-item" href="{% url 'login'%}">Login</a>
-            <a class="dropdown-item" href="{% url 'signup' %}">Criar Conta</a>
+            <a class="dropdown-item" href="{% url 'signup'%}">Criar Conta</a>
           <a class="dropdown-item" href="#">Documentação</a>
         </div>
-        {%endif%}
-
       </li>
     </ul>
 <!--    <form class="form-inline my-2 my-lg-0">
@@ -74,10 +65,27 @@
 
 <main role="main" class="container">
 
-  <div class="starter-template">
-      {% block content %}
-      {% endblock %}
+    <div>
+        {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}">
+                {{ message }}
+            </div>
+        {% endfor %}
 
+        {% endif %}
+    </div>
+  <div class="starter-template">
+    <h1>Projeto de Controle de Acesso por Verificação de Voz</h1>
+    <p class="lead">Plataforma do Sistema.</p>
+
+    {% if request.user.is_authenticated %}
+    <h2> Welcome {{ request.user.username}}</h2>
+    <a type="button" class="btn btn-primary" href="{% url 'profile'%}" >Perfil</a>
+    <a type="button" class="btn btn-danger" href="{% url 'logout'%}" >Logout</a>
+    {% else %}
+    <a type="button" href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    {% endif %}
   </div>
 
 </main><!-- /.container -->
