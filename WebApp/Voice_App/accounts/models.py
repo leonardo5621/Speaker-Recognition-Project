@@ -9,7 +9,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     birthday = models.DateField(null=True)
     image = models.ImageField(default='blank.jpg', upload_to='profile_pics')
-    audio_data = models.FileField(upload_to=return_path, null=True)
+
     
     def __str__(self):
         return f'{self.user.username}'
