@@ -20,9 +20,6 @@ def register(request):
     return render(request, 'accounts/signup.html', {'form': form})
 
 
-def Home(request):
-    return render(request, 'accounts/home_template.html')
-
 def AboutPage(request):
     return render(request, 'accounts/About.html')
 

@@ -1,0 +1,25 @@
+{%extends 'create_gmm/template_app.html'%}
+
+
+
+{%block titulo%}
+
+<title>Delete Model</title>
+{%endblock%}
+
+{% block content%}
+<form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <fieldset class="form-group">
+        <h2>Você tem Certeza que Quer Deletar <br> 
+            o Modelo Acústico "{{object.model_name}}"?</h2>
+        <div class="form-group">
+             </fieldset>
+    <button type="submit" class="btn btn-outline-danger">Sim</button>
+    <a type="submit" class="btn btn-outline-secondary" href="{%url 'home'%}">Não, mudei de ideia</a>
+        </div>
+
+</form>
+{% endblock %}
+
