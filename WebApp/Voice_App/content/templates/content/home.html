@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--Carregando os static files -->
+    {% load static %}
+
+    <title>Home</title>
+
+    <!-- Static Files Utilizados -->
+
+    <link rel="stylesheet" href="{% static 'content/starter-template.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'content/css/bootstrap.min.css' %}" type="text/css"> 
+    
+    <!-- Alguns Estilos Usados na Pagina -->
+    
+    <style>
+      
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+    .sidenav {
+      width: 150px;
+      z-index: 1;
+      top: 20px;
+      left: 10px;
+      background: #eee;
+      overflow-x: hidden;
+  
+    } 
+
+
+    .sidenav a {
+  padding: 6px 10px 6px 40px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #2196F3;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #064579;
+}
+
+    .sidenav p {
+    padding: 10px 10px 5px 10px;
+    text-align:center;
+    }
+
+
+    </style>  
+
+  </head>
+
+
+  <body>
+  
+      <!-- Barra de Superior da Pagina -->
+
+       <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+           <a class="navbar-brand" href="{% url 'home'%}">Home</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+              <a class="nav-link" href="{% url 'about' %}">Sobre o Projeto <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Contato</a>
+      </li>
+<!--      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+</li> -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções</a>
+     
+        <!--Conteudo da barra de opções -->
+        
+        {% if request.user.is_authenticated %}
+      <div class="dropdown-menu" aria-labelledby="dropdown01">
+          <a class="dropdown-item" href="#">Documentação</a>
+        </div>
+
+       {% else%}
+
+        <div class="dropdown-menu" aria-labelledby="dropdown01">
+            <a class="dropdown-item" href="{% url 'login'%}">Login</a>
+            <a class="dropdown-item" href="{% url 'signup' %}">Criar Conta</a>
+          <a class="dropdown-item" href="#">Documentação</a>
+        </div>
+
+    {%endif%}      
+      </li>
+    </ul>
+
+<!--    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+</form> -->
+
+  </div>
+</nav>
+
+<main role="main" class="container">
+
+<!-- Mensagens da Pagina-->
+
+    <div>
+        {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% endif %}
+    </div>
+
+    <!--Conteudo da Pagina-->
+
+  <div class="starter-template">
+  
+      <h1>Projeto de Controle de Acesso por Verificação de Voz</h1>
+      
+      <p class="lead" style=" text-align:center ">Post e Updates</p>
+
+    {% if request.user.is_authenticated %}
+
+     <div class="row">
+
+          <div class="col-md-9">
+
+            <div class="main">
+
+                 {%for New in News%}
+
+    <hr>
+
+     <article class="media content-section">
+
+         <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ New.author }}</a>
+              <small class="text-muted">{{ New.date_published|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title" href='#'>{{ New.title }}</a></h2>
+            <p class="article-content">{{ New.text_body }}</p>
+          </div>
+    </article>
+
+
+        {%endfor%}
+
+             <hr>
+
+            </div>
+         </div>
+
+
+    <div class="col-md-3">
+    <div class="sidenav">
+
+        <p class="lead"> Welcome {{ request.user.username}}!</p>
+            <a  href="{% url 'profile' %}">Perfil</a>
+            <a href="{% url 'logout'%}"> Sair </a>
+            <a href="{%url 'create-model'%}"> Modelo Acustico</a>
+    </div>
+
+    </div>
+
+  </div>       
+
+    {% else %}
+
+    <div class="row">
+
+          <div class="col-md-9">
+
+          <div class="main">
+
+
+    {%for New in News%}
+
+    <hr>
+
+     <article class="media content-section">
+
+         <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ New.author }}</a>
+              <small class="text-muted">{{ New.date_published|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title" href='#'>{{ New.title }}</a></h2>
+            <p class="article-content">{{ New.text_body }}</p>
+          </div>
+          
+
+</article>
+
+    {%endfor%}
+    
+    <hr>
+
+          </div>
+
+     </div>
+     
+     <div class="col-md-3">
+    <div class="sidenav">
+
+            <p class="lead"> Acesse sua Conta!</p>
+            <a  href="{% url 'login' %}">Login</a>
+    </div>
+
+    </div>
+
+
+    {% endif %}
+
+      </div>
+
+</div>
+
+
+
+
+</main><!-- /.container -->
+
+
+<footer id="foot">
+
+    <div class="inner">
+        <p>  Universidade de São Paulo</p>
+    </div>
+
+</footer> 
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>

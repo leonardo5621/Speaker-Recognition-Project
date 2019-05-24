@@ -1,6 +1,8 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+
 def return_path(instance, filename):
     return 'profile_access/{0}_train_data/{1}'.format(instance.user.username, filename)
 
@@ -16,3 +18,4 @@ class AcousticModel(models.Model):
 
     def get_absolute_url(self):
         return reverse('detail-model', kwargs={'pk': self.pk})
+

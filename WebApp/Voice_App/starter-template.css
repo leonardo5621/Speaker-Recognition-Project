@@ -1,0 +1,17 @@
+body {
+  padding-top: 5rem;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: justify;
+  width: 1000px;
+}
+
+#foot{
+    text-align: center;
+    padding: 20px;
+}
+
+#get_space {
+    padding-top: 30px;
+}

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'accounts',
+    'content',
     'create_gmm',
     'crispy_forms',
     'django_tables2',

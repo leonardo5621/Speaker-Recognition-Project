@@ -45,4 +45,4 @@ class ModelDeleteView(DeleteView, LoginRequiredMixin, UserPassesTestMixin):
             return True
         return False
 
-    
+ 
