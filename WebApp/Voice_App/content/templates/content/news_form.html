@@ -1,0 +1,22 @@
+{%extends 'content/template_app.html' %}
+
+
+    {% load crispy_forms_tags %}
+
+
+    {%block titulo%}
+    <title>Posts</title>
+    {%endblock%}
+
+
+    {%block content%}
+
+    <h1> Posts Para a Plataforma</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+    <button type="submit" class="btn btn-dark">Postar</button>
+        </form>
+
+
+    {%endblock%}

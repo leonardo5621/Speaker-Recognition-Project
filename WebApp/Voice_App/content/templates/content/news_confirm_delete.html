@@ -1,0 +1,24 @@
+{% extends 'content/template_app.html'%}
+
+{%block titulo%}
+
+<title>Excluir Post</title>
+{%endblock%}
+
+{% block content%}
+
+<form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <fieldset class="form-group">
+        <h2>Você tem Certeza que Quer Deletar <br>
+            o seu Post?</h2>
+        <div class="form-group">
+             </fieldset>
+    <button type="submit" class="btn btn-outline-danger">Sim</button>
+    <a type="submit" class="btn btn-outline-secondary" href="{%url 'home'%}">Não, mudei de ideia</a>
+        </div>
+
+</form>
+{% endblock %}
+

@@ -160,8 +160,14 @@
               <a class="mr-2" href="#">{{ New.author }}</a>
               <small class="text-muted">{{ New.date_published|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href='#'>{{ New.title }}</a></h2>
+            <h2><a class="article-title" href='{% url 'detail-post' New.id %}'>{{ New.title }}</a></h2>
             <p class="article-content">{{ New.text_body }}</p>
+
+            {% if New.author == user %}
+
+            <a href="{% url 'delete-post' New.id%}">Exluir Post</a> <br>
+            <a href="{% url 'update-post' New.id%}">Atualizar Post</a>
+            {% endif %}
           </div>
     </article>
 
@@ -181,6 +187,10 @@
             <a  href="{% url 'profile' %}">Perfil</a>
             <a href="{% url 'logout'%}"> Sair </a>
             <a href="{%url 'list-model'%}"> Modelo Acustico</a>
+
+            {% if request.user.username == 'leonardo'%}   <!-- NOME DO USUARIO PRINCIPAL -->
+            <a href="{%url 'create-post' %}"> Criar Post</a>
+            {% endif %}
     </div>
 
     </div>

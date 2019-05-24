@@ -1,0 +1,31 @@
+{% extends 'content/template_app.html'%}
+
+{% load static %}
+
+{% block titulo %}
+    <title> {{object.title}} </title>
+    <link rel="stylesheet" href="{% static 'accounts/style_detail.css'%}" type="text/css">
+{% endblock%}
+
+{% block content%}
+
+<div class="container">
+    <div class="row">
+   
+        <div class="mx-auto col-md-8">
+           <div class="jumbotron">
+               <h1 class="display-4">{{object.title}}</h1>
+          <p class="lead">{{object.text_body}}</p>
+          <hr class="my-4">
+          <p> {{object.date_published}}</p>
+          <p class="lead">
+
+          </p>
+        </div>
+
+        </div>
+        </div>
+    
+</div>
+
+{% endblock %}
