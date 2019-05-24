@@ -1,0 +1,62 @@
+{% extends 'create_gmm/template_app.html' %}
+
+    {%block titulo%}
+
+    <title>Models List</title>
+
+    {% endblock %}
+
+    {% block content%}
+    
+    <h1> Lista de Modelos Acústicos de {{request.user.username }}</h1>
+
+    <div class="row">
+
+          <div class="col-md-9">
+
+            <div class="main">
+
+                 {%for model in models%}
+
+    <hr>
+
+     <article class="media content-section">
+
+         <div class="media-body">
+            <div class="article-metadata">
+              <p> Usuário : {{ model.user.username }}</p>
+              <small class="text-muted">Info</small>
+            </div>
+            <h2><a class="article-title" href='#'>Nome:{{model.model_name }}</a></h2>
+            <p class="article-content">Sampling Rate: {{ model.sampling_rate }}
+            <br> Formato: {{model.audio_format}}
+            <br> <a href="{% url 'update-model' model.id%}">Atualizar</a>
+            <br> <a href="{% url 'delete-model' model.id%}">Excluir</a>
+            </p>
+          </div>
+    </article>
+
+
+        {%endfor%}
+
+             <hr>
+
+            </div>
+         </div>
+
+         <div class="col-md-3">
+    <div class="sidenav">
+
+        <p class="lead"> Opções </p>
+        <a  href="#">Deletar</a>
+            <a href="#">Atualizar</a>
+            <a href="#"> Treinar Novo Modelo </a>
+    </div>
+
+    </div>
+
+  </div>
+
+
+
+    {% endblock %}

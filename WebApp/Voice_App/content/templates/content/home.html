@@ -45,9 +45,9 @@
 
 
     .sidenav a {
-  padding: 6px 10px 6px 40px;
+  padding: 6px 30px 6px 40px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 20px;
   color: #2196F3;
   display: block;
 }
@@ -180,7 +180,7 @@
         <p class="lead"> Welcome {{ request.user.username}}!</p>
             <a  href="{% url 'profile' %}">Perfil</a>
             <a href="{% url 'logout'%}"> Sair </a>
-            <a href="{%url 'create-model'%}"> Modelo Acustico</a>
+            <a href="{%url 'list-model'%}"> Modelo Acustico</a>
     </div>
 
     </div>

@@ -38,11 +38,16 @@ class ModelDetailView(DetailView):
 
 class ModelDeleteView(DeleteView, LoginRequiredMixin, UserPassesTestMixin):
     model = AcousticModel
-    success_url='/accounts'
+    success_url='/'
     def test_func(self):
         model = self.get_object()
         if self.request.user == model.user:
             return True
         return False
 
- 
+class ModelListView(ListView, LoginRequiredMixin, UserPassesTestMixin):
+    model = AcousticModel
+    template_name = 'create_gmm/modelsList.html'
+    context_object_name = 'models'
+
+
