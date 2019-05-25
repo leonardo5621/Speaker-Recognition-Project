@@ -1,11 +1,34 @@
 {% extends 'create_gmm/template_app.html'%}
 
 
-{% load crispy_forms_tags %}
+{%block titulo%}
+<title>Modelo Acústico</title>
+{% endblock %}
+
 {% block content%}
 
-<h2 class="article-title">{{ object.audio_format }}</h2>
-<p class="article-content">{{ object.sampling_rate }}</p>
+<div class="container">
+    <div class="row">
+
+        <div class="mx-auto col-md-8">
+           <div class="jumbotron">
+               <h1 class="display-6">Nome:{{object.model_name}}</h1>
+          <p class="lead">Taxa de Amostragem:{{object.sampling_rate}}</p>
+          <hr class="my-4">
+          <p> Formato do Audio: {{object.audio_format}}</p>
+        
+          <p class="lead">
+
+          </p>
+        </div>
+
+        </div>
+        </div>
+
+</div>
+
+
+
 {% endblock %}
 
 

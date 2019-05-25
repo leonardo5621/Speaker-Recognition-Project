@@ -27,7 +27,7 @@
               <p> Usuário : {{ model.user.username }}</p>
               <small class="text-muted">Info</small>
             </div>
-            <h2><a class="article-title" href='#'>Nome:{{model.model_name }}</a></h2>
+            <h2><a class="article-title" href="{% url 'detail-model' model.id %}">Nome:{{model.model_name }}</a></h2>
             <p class="article-content">Sampling Rate: {{ model.sampling_rate }}
             <br> Formato: {{model.audio_format}}
             <br> <a href="{% url 'update-model' model.id%}">Atualizar</a>
@@ -48,9 +48,9 @@
     <div class="sidenav">
 
         <p class="lead"> Opções </p>
-        <a  href="#">Deletar</a>
-            <a href="#">Atualizar</a>
-            <a href="#"> Treinar Novo Modelo </a>
+        <a  href="{% url 'about-model'%}">Como os Modelos São Criados?</a>
+        
+         
     </div>
 
     </div>

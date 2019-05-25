@@ -1,0 +1,39 @@
+{% extends 'create_gmm/template_app.html'%}
+
+{% block titulo%}
+
+<title>Modelos?</title>
+
+{% endblock%}
+
+{% block content%}
+
+    <div class="container">
+    <div class="row">
+
+        <div class="mx-auto col-md-8">
+           <div class="jumbotron">
+               <h1 class="display-6">O que são estes modelos acústicos?</h1>
+          <p class="lead">Os modelos acústicos utilizados neste projeto são uma forma de guardar as informações sobre a voz de cada locutor, os dados fornecidos na etapa de criação do modelo são usados para adaptá-los para que eles possam reconhecer a voz do usuário. O algoritmo utilizado é o do Modelo de Mistura de Gaussianas(GMM). </p>
+          <hr class="my-4">
+          
+              <p> Para mais detalhes acesse</p>
+         
+          <a href="https://towardsdatascience.com/gaussian-mixture-modelling-gmm-833c88587c7f"> Sobre o GMM</a>
+          
+          <p></p>
+          <p>Caso você não tenha familiaridade com o algoritmo do K-Means, leia este artigo também </p>
+        
+          <a href="https://towardsdatascience.com/k-means-clustering-8e1e64c1561c"> K-Means</a>
+          <p class="lead">
+
+          </p>
+        </div>
+
+        </div>
+        </div>
+
+</div>
+
+
+{% endblock%}

@@ -9,6 +9,8 @@ from django.views.generic import (
 )
 from .models import AcousticModel
 
+def AboutGmm(request):
+    return render(request, 'create_gmm/about_gmm.html')
 
 class ModelCreateView(LoginRequiredMixin,CreateView):
     model = AcousticModel
