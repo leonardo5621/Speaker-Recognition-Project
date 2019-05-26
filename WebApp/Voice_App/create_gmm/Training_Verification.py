@@ -9,7 +9,7 @@ import soundfile as sf
 import librosa
 from .utils import *
     
-def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=70,Type='diag'):
+def Train_Model(TrainDirectory, ModelName, SamplingRate,  AudioFormat='wav', N_Components=80, Type='diag'):
     
     """ Parameters of the Function
     
@@ -18,23 +18,21 @@ def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=70,Type='dia
     -N_Components: Number of Components in the Gaussian Mixture Model
     -Type: type of the covariance matrix in the model 
     """
-    ModelsDir='AcusticModels'      
-    Model=GMM(N_Components,Type)
-    CurrentDir=os.getcwd()        
-    FTS=Features(TrainDirectory,Aformat)
-    dataType=FTS[1]
-    ch=FTS[2]
-    srate=FTS[3]
+   
+    Model = GMM(N_Components,Type)
+    CurrentDir = os.getcwd()        
+    FTS = Features(TrainDirectory, AudioFormat, SamplingRate)
+
     print('Features Extracted')
-    Model.fit(FTS[0])
+    Model.fit(FTS)
     print('Model Trained')
     os.chdir(TrainDirectory)
     os.chdir(CurrentDir)
-    File=open(ModelsDir+'/'+ModelName,'wb')
+    File = open(TrainDirectory + ModelName + '.model','wb')
     pickle.dump(Model,File)
     File.close()
     print('Model File Created')
-    return Model.bic(FTS[0])
+   # return Model.bic(FTS[0])
     #Dist=Ajust_Theta(ModelName,TrainDirectory)
     #DistInfo=['Mean','std dev']
     #Idx=[ModelName]
