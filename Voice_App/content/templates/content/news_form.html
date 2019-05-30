@@ -11,11 +11,21 @@
 
     {%block content%}
 
-    <h1> Posts Para a Plataforma</h1>
+
         <form method="post" enctype="multipart/form-data">
+
             {% csrf_token %}
+
+            <fieldset class="form-group">
+<legend class="border-bottom mb-4">Criar Novo Post</legend>
+
             {{ form|crispy }}
+
+            </fieldset>
+
+            <div class="form-group">
     <button type="submit" class="btn btn-dark">Postar</button>
+        </div>
         </form>
 
 

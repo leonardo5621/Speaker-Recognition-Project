@@ -1,12 +1,9 @@
 import numpy as np
 from sklearn.mixture import GaussianMixture as GMM
-import python_speech_features as psf
 import pickle
 from scipy.io import wavfile
 import os
 import pandas as pd
-import soundfile as sf
-import librosa
 from .utils import *
     
 def Train_Model(TrainDirectory, ModelName, SamplingRate,  AudioFormat='wav', N_Components=80, Type='diag'):
