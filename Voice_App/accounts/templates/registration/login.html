@@ -1,32 +1,9 @@
 
 {% extends 'accounts/template_app.html'%}
-<!DOCTYPE html>
-<!--
-<html lang="en">
 
-    <head>
-    
-        <meta charset="utf-8">
-    
-    </head>
-
-    <body>
-<h1>Login Page</h1>
-
-<form method="post">
-    {% csrf_token %}
-    {{ form.ias_p }}
-
-    <button type="submit">Login</button>
-
-    <p>Sign up for free today!</p>
-
-    <a href="{% url 'signup' %}">Create Account</a>
-    
-
-    </body>
-</html> -->
-
+{% block titulo%}
+    <title>Login</title>
+{% endblock %}
 
 {% block content%}
 
@@ -42,4 +19,11 @@
 
     <a href="{% url 'signup' %}">Criar Conta</a>
 
+    <div style=" margin-top: 20px">
+    <p>Perdeu sua Senha?</p>
+
+    <a href="{% url 'password_reset' %}">Recuperar Senha</a>
+
+
+    </div>
 {% endblock %}
