@@ -1,85 +1,52 @@
-import python_speech_features as psf
 import numpy as np
 import soundfile as sf
 import librosa
 import os
-import glob
 from sklearn import preprocessing
-from os.path import join
 from scipy.io import wavfile
-from pydub import AudioSegment
+from webrtcvad_support import Get_wavefile
 
-#Get the Tracks of a Single Speaker
-def readOne(SpeakerID, PATH):
-	CurrentDir = os.getcwd()
-	TRACKS = []
-	os.chdir(os.join('PATH', SpeakerID))
-	for f in os.listdir:
-		TRACKS.append(wavfile.read(f))
-	os.chdir(CurrentDir)
-	return TRACKS
+
+def GetSingleFile(Audio_file):
+
+    if os.path.isfile(Audio_file):
+        Track = sf.read(Audio_file)
+        dataType = Track[0].dtype
+        ch = len(Track[0].shape)
+        sr = Track[1]
+        MFCC = librosa.feature.mfcc(Track[0], sr=Track[1], n_mfcc=13)
+        MFCCN = preprocessing.scale(MFCC)
+        return [MFCCN,sr]
+
+    else:
+        return print('File Not Found')
+
 
 #Feature Extraction for All the Files in a Given Directory
 
 def Features(PATH,Aformat):
-    currentDir = os.getcwd()
-    os.chdir(PATH)
+   
     FT = np.asarray(())
-    #DEFAULT PARAMETERS
-    datatype='float64'
-    ch=1
-    sr=44100
+
     for files in os.listdir():
-        if files.endswith('.'+Aformat):
-            Audio=sf.read(files)
-            dataType=Audio[0].dtype
-            ch=len(Audio[0].shape)
-            sr=Audio[1]
-            Mfcc=librosa.feature.mfcc(Audio[0],sr=Audio[1],n_mfcc=20).transpose()
-            Mfcc_Normalized=preprocessing.scale(Mfcc)
-            Delta=librosa.feature.delta(Mfcc_Normalized)
-            Features=np.hstack((Mfcc_Normalized,Delta))
-            FT=Features if FT.size==0 else np.vstack((FT,Features))            
-    chdir(currentDir)
+        if os.path.isfile(files):
+            if files.endswith('.'+Aformat):
+                Audio=sf.read(files)
+                dataType=Audio[0].dtype
+                ch=len(Audio[0].shape)
+                sr=Audio[1]
+                Mfcc=librosa.feature.mfcc(Audio[0],sr=Audio[1],n_mfcc=13).transpose()
+                Mfcc_Normalized=preprocessing.scale(Mfcc)
+                FT=Features if FT.size==0 else np.vstack((FT,Mfcc_Normalized))            
+   
     return [FT,dataType,ch,sr]
 
 
-
-
-def ConvertWAV(audioPath,inpFormat,OneFile=True):
-    "If the objective is to convert several files at once, audioPath should be the path"
-    "to a directory, otherwise it should give the path directly to the file"
-
-    currentDir=os.getcwd()
-    if OneFile:
-        audioDir,audioFile=os.path.split(audioPath)
-        os.chdir(audioDir)
-        print(audioDir)
-        baseName=os.path.splitext(os.path.basename(audioPath))[0]
-        newFileName=baseName+'.wav'
-        AudioSegment.from_file(audioFile).export(newFileName,format='wav')
-        os.chdir(currentDir)
-        print('Conversion Done')
-    else:
-        try:
-            ##List of the audio files
-            audioList=glob.glob(audioPath+'*.'+inpFormat)
-            ##Changing to the directory containing the audio files
-            os.chdir(os.path.dirname(audioPath))
-            for audioFile in audioList:
-                ##Name of the Audio File
-                bs=os.path.basename(audioFile)
-                FileName=os.path.split(audioFile)[1]
-                baseFileName=os.path.splitext(FileName)[0]
-                ##Name of the New file
-                newFileName=baseFileName+'.wav'
-                AudioSegment.from_file(bs,format=inpFormat).export(newFileName,format='wav')
-            os.chdir(currentDir)
-        except FileNotFoundError:
-            os.chdir(currentDir)
-            print('File not Found')
-
 def SilenceRemoval(AudioSignal,sr,threshold_only=False):
+    
+    """Teste Function for Silence Removal"""
+
+
     dataType=AudioSignal.dtype
     Signal=AudioSignal
     ##Frame Length
@@ -138,3 +105,23 @@ def SilenceRemoval(AudioSignal,sr,threshold_only=False):
         AudioReconst=np.concatenate((AudioChan1,AudioChan2),axis=1)
         return AudioReconst,
 
+
+def Voice_Activity_Detection(filename):
+
+    """ Function for separating the voiced parts from audio files"""
+    Rec_Dir = os.path.dirname(filename)
+    Audio_File = os.path.basename(filename)
+    Audio_Name = Audio_File.split('.')[0]
+    Output_Wavefile = 'VAD_{}'.format(Audio_Name)
+    Output_Wavefile_Path = os.path.join(Rec_Dir, Output_Wavefile)
+
+    try:
+       Files = Get_Wavefile(filename, Rec_Dir, Output_Wavefile)
+        
+        if os.path.isfile(Files[0]): ## ESSE ZERO EH PROVISORIO
+            print('File Created')
+        else:
+            print('Error: Output Audio File has not been created')
+    except FileNotFoundError:
+
+        print('Audio Not Found')

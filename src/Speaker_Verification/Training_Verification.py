@@ -7,89 +7,66 @@ import os
 import pandas as pd
 import soundfile as sf
 import librosa
-from .utils import *
-    
+from utils import *
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=70,Type='diag'):
     
-    """ Parameters of the Function
+    """ Training of a Gaussian Mixture Model.
+
+    Keyword Arguments:
     
-    -TrainDirectory: Directory where is located all the Data for the Training of the new model
-    -ModelName: Name of the new model, usually it takes the ID of the Speaker
-    -N_Components: Number of Components in the Gaussian Mixture Model
-    -Type: type of the covariance matrix in the model 
+    TrainDirectory: Directory where is located all the Data for the Training of the new model
+    ModelName: Name of the new model, usually it takes the ID of the Speaker
+    N_Components: Number of Components in the Gaussian Mixture Model
+    Type: type of the covariance matrix in the model 
+    
     """
-    ModelsDir='AcusticModels'      
-    Model=GMM(N_Components,Type)
-    CurrentDir=os.getcwd()        
-    FTS=Features(TrainDirectory,Aformat)
-    dataType=FTS[1]
-    ch=FTS[2]
-    srate=FTS[3]
+    ModelsDir = os.path.join(BASE_DIR, 'AcusticModels')
+    Model = GMM(N_Components, Type)        
+    FTS = Features(TrainDirectory, Aformat)
     print('Features Extracted')
     Model.fit(FTS[0])
     print('Model Trained')
-    os.chdir(TrainDirectory)
-    os.chdir(CurrentDir)
-    File=open(ModelsDir+'/'+ModelName,'wb')
-    pickle.dump(Model,File)
-    File.close()
-    print('Model File Created')
-    return Model.bic(FTS[0])
-    #Dist=Ajust_Theta(ModelName,TrainDirectory)
-    #DistInfo=['Mean','std dev']
-    #Idx=[ModelName]
-    #print(Dist)
-    #DistData=pd.read_csv('DistFrame.csv')
-    ##Check if the ModelName already exists in the DataFrame
-    #L=len(DistData.loc[DistData['Name']==ModelName].index)
-    #NewDist=pd.DataFrame({'Name':ModelName,'Mean':Dist[0],'std dev':Dist[1]},index=[L])
-    #if L!=0:
-    #    i=input('The Model has already been registred, would you like to overwrite it?(y/n)')
-    #    if i=='y':
-    #        DistData=pd.concat([DistData,NewDist])
-    #        DistData.drop_duplicates('Name',keep='last',inplace=True)
-    #        DistData.to_csv('DistFrame.csv',index=False)
-    #else:
-    #    DistData=pd.concat([DistData,NewDist],sort=True)
-    #    DistData.to_csv('DistFrame.csv',index=False)
-    #AudioProps=pd.read_csv('AudioProperties.csv')
-    #L2=len(DistData.loc[DistData['Name']==ModelName].index)
-    #NewSpeaker=pd.DataFrame({'Name':ModelName,'SamplingRate':srate,'dtype':dataType,'channels':ch,'AudioFormat':Aformat},index=[L2])
-    #AudioProps=pd.concat([AudioProps,NewSpeaker])
-    #AudioProps.to_csv('AudioProperties.csv',index=False)
+    try:
+        with open(os.path.join(ModelsDir, '{}.model'.format(ModelName)),'wb') as File:
+            pickle.dump(Model,File)
+        print('Model File Created')
+    except FileNotFoundError:
+        print('Directory does not exist')
 
-def Verification(SPEAKER,Audio,ModelsDir='AcusticModels/'):
+def Verification(ID, Audio, ModelsDir='AcusticModels', Background_Model='ubm'):
     
-    """ Parameters of the Function
+    """ Speaker Verification of a claimed ID.
+
+    Keyword Arguments:
     
-    -SPEAKER: Speaker ID Claimed for the Verification
-    -Audio: Audio File inserted to perform the Verification
-    -ReturnTheta: Decides whether or not the function gives back the value of Theta, which is the difference between the scores of the Audio in the Speaker Model and in the Universal Model
-    -UBM: Which Universal model to be used for the Verification
-    """
-    full_path = '/home/leonardo/Speaker-Recognition-Project/WebApp/Voice_App/profiles_access'
+    ModelsDir: Directory of the Acoustic Models.  
+   
+   """
 
-    if (isinstance(Audio,str) & isinstance(SPEAKER,str)):
-        if (SPEAKER in os.listdir(ModelsDir)):
-            SPFile=open(ModelsDir+SPEAKER,'rb')
-            ModelRequested=pickle.load(SPFile)
-            SPFile.close()
-            TestTrack,srate=sf.read(Audio)
-            MFCC=librosa.feature.mfcc(TestTrack,sr=srate,n_mfcc=20).transpose()
-            MFCC_N=preprocessing.scale(MFCC)
-            delta=librosa.feature.delta(MFCC_N)
-            Features=np.hstack((MFCC_N,delta))
-            for FT in Features:
-                P1=ModelRequested.score(FT)
-                print(P1)
+    ABS_DIR = os.path.join(BASE_DIR, ModelsDir)
+    ID_Model = '{}.model'.format(ID)
+    ID_Model_File = os.path.join(ABS_DIR, ID_Model) 
+    number_mfccs = 13
+    UBM_Model = '{}.model'.format(Background_Model)
+    UBM_Model_File = os.path.join(ABS_DIR, UBM_Model)
 
-            #DistData=pd.read_csv('DistFrame.csv')
-            #DistData.sort_values('Name',inplace=True)
-            #DistData.drop_duplicates(subset='Name',inplace=True,keep='last')
-            #Mean=float(DistData.loc[DistData['Name']==SPEAKER].Mean)
-            #Sigma=float(DistData.loc[DistData['Name']==SPEAKER]['std dev'])
+    if (isinstance(Audio,str) & isinstance(ID,str)):
+        if os.path.isfile(ID_Model_File):
+            with open(ID_Model_File,'rb') as SPFile:
+                ModelRequested = pickle.load(SPFile)
 
-            FinalScore=P1
+            with open(UBM_Model_File, 'rb') as UBM_File:
+                UBM = pickle.load(UBM_File)
+
+            TestTrack,srate = sf.read(Audio)
+            MFCC = librosa.feature.mfcc(TestTrack,sr=srate,n_mfcc=number_mfccs).transpose()
+            Features = preprocessing.scale(MFCC)
+            P1 = ModelRequested.score(Features)
+            P2 = UBM.score(Features)
+            FinalScore = P1-P2
 
             if FinalScore>0:
                 print('Verification Confirmed')
