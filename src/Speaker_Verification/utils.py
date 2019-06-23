@@ -4,7 +4,7 @@ import librosa
 import os
 from sklearn import preprocessing
 from scipy.io import wavfile
-from webrtcvad_support import Get_wavefile
+from .webrtcvad_support import Get_Wavefile
 
 
 def GetSingleFile(Audio_file):
@@ -105,23 +105,44 @@ def SilenceRemoval(AudioSignal,sr,threshold_only=False):
         AudioReconst=np.concatenate((AudioChan1,AudioChan2),axis=1)
         return AudioReconst,
 
+def Gather_WAV_Files(Files_List, Base_Dir):
+    
+    Total_Length = 0
+    Audio_Signals = []
+
+    try:
+        for File in Files_List:
+            Path = os.path.join(Base_Dir, File)
+            Audio, sr = sf.read(Path)
+            Total_Length += len(Audio)
+            Audio_Signals.append(Audio)
+
+        Audio_Array = np.zeros(Total_Length)
+        Start = 0
+        for Signal in Audio_Signals:
+            Audio_Array[Start:(Start+len(Signal))] = Signal
+            Start += len(Signal)-1
+        
+        return Audio_Array
+    
+    except FileNotFoundError:
+
+        print('Audio File Not Found')
 
 def Voice_Activity_Detection(filename):
 
     """ Function for separating the voiced parts from audio files"""
+   
     Rec_Dir = os.path.dirname(filename)
     Audio_File = os.path.basename(filename)
     Audio_Name = Audio_File.split('.')[0]
     Output_Wavefile = 'VAD_{}'.format(Audio_Name)
     Output_Wavefile_Path = os.path.join(Rec_Dir, Output_Wavefile)
-
-    try:
-       Files = Get_Wavefile(filename, Rec_Dir, Output_Wavefile)
-        
-        if os.path.isfile(Files[0]): ## ESSE ZERO EH PROVISORIO
+    Files = Get_Wavefile(filename, Rec_Dir, Output_Wavefile)
+    for File in Files:
+        if os.path.isfile(File):
             print('File Created')
         else:
-            print('Error: Output Audio File has not been created')
-    except FileNotFoundError:
+            print('Error: Output Audio File has not been created correctly')
 
-        print('Audio Not Found')
+    return Files

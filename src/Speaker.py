@@ -62,7 +62,7 @@ def main():
     Audio_Format = Arguments.fileformat
     Base_Dir = GND.BASE_DIR
     Recording_Dir = os.path.join(Base_Dir, 'Recordings')
-    Speaker_Rec_Dir = os.path.join(Recorgin_Dir, Speaker_Id)
+    Speaker_Rec_Dir = os.path.join(Recording_Dir, Speaker_Id)
     
     if os.path.isdir(Speaker_Rec_Dir):
         pass
@@ -74,10 +74,14 @@ def main():
             GND.Verification(Speaker_Id,Audio_File)
         elif Arguments.Method == 'microphone':
         
-        Wave_Output_File = "{}_output.wav".format(Speaker_Id)
-        Wave_Output = os.path.join(Speaker_Rec_Dir, Wave_Output_File)    
-        Record(Wave_Output)
+            Wave_Output_File = "{}_output.wav".format(Speaker_Id)
+            Wave_Output = os.path.join(Speaker_Rec_Dir, Wave_Output_File)    
+            Record(Wave_Output)
 
-        if os.path.isfile(Wave_Output):
+            if os.path.isfile(Wave_Output):
 
-            utils.Voice_Activity_Detection(Wave_Output)
+                VAD_Applied_Files = utils.Voice_Activity_Detection(Wave_Output)
+                
+
+if __name__ == '__main__':
+    main()

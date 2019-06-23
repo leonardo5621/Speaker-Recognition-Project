@@ -4,6 +4,7 @@ import sys
 import wave
 import webrtcvad
 import os
+from datetime import datetime
 
 def read_wave(path):
     """Reads a .wav file.
@@ -145,8 +146,13 @@ def Get_Wavefile(filename, R_Dir, Output_Name, aggressiveness=2):
     frames = list(frames)
     segments = vad_collector(sample_rate, 30, 300, vad, frames)
     Files_Created = []
+    dd = datetime.now().day
+    hh = datetime.now().hour
+    minute = datetime.now().minute
+    Instant_Now = '{0}-{1}-{2}'.format(dd, hh, minute)
+
     for i, segment in enumerate(segments):
-        File_Name = '{0}_{1}.wav'.format(Output_name, i)
+        File_Name = '{0}_{1}_{2}.wav'.format(Output_Name, Instant_Now, i)
         path = os.path.join(R_Dir, File_Name)
         #print(' Writing %s' % (path,))
         write_wave(path, segment, sample_rate)

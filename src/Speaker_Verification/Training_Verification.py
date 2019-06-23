@@ -7,7 +7,7 @@ import os
 import pandas as pd
 import soundfile as sf
 import librosa
-from utils import *
+from .utils import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
