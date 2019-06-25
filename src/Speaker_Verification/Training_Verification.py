@@ -54,6 +54,7 @@ def Verification(ID, Audio, ModelsDir='AcusticModels', Background_Model='ubm'):
     UBM_Model_File = os.path.join(ABS_DIR, UBM_Model)
 
     if (isinstance(Audio,str) & isinstance(ID,str)):
+
         if os.path.isfile(ID_Model_File):
             with open(ID_Model_File,'rb') as SPFile:
                 ModelRequested = pickle.load(SPFile)

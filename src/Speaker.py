@@ -81,7 +81,8 @@ def main():
             if os.path.isfile(Wave_Output):
 
                 VAD_Applied_Files = utils.Voice_Activity_Detection(Wave_Output)
-                
+                GND.Verification(Speaker_Id, VAD_Applied_Files)
+
 
 if __name__ == '__main__':
     main()

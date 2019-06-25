@@ -157,6 +157,7 @@ def Get_Wavefile(filename, R_Dir, Output_Name, aggressiveness=2):
         #print(' Writing %s' % (path,))
         write_wave(path, segment, sample_rate)
         Files_Created.append(path)
+    
 
-    return Files_Created
+    return Files_Created[0]
 
