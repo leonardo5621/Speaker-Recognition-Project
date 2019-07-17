@@ -1,19 +1,13 @@
-import argparse
-import sounddevice as sd
-from scipy.io import wavfile
+import os
 import Speaker_Verification.Training_Verification as GND
 import Speaker_Verification.utils as utils
 import soundfile as sf
-import pandas as pd
-import noisereduce as nr
-import detect_voice
-import os
+import argparse
+import pyaudio
+import wave
+from scipy.io import wavfile
 
-def get_sample(audio='sample.flac',audio_format='.flac'):
-    audio_signal,srate=sf.read(audio)
-    return audio_signal
-
-def get_arguments():
+def Get_Arguments():
 
     parser=argparse.ArgumentParser()
     parser.add_argument('Option',help='(train/verify) Choose between training a new model or performing the verification of an audio')
@@ -23,41 +17,72 @@ def get_arguments():
     parser.add_argument('Method',help='Method for delivering the audio to perform the verification(file/microphone)')
     return parser.parse_args()
 
+def Record(Wave_Output):
+    
+    CHUNK = 1024
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 16000
+    RECORD_SECONDS = 5
+    WAVE_OUTPUT_FILENAME = Wave_Output
+    p = pyaudio.PyAudio()
 
-def Main():
-    arguments=get_arguments()
-    SpeakerId=arguments.Speaker
-    AudioF=arguments.Audio
-    opt=arguments.Option
-    af=arguments.fileformat
-    if opt=='verify':
-        ##REVER A MANIPULAÇÃO DOS FORMATOS     
-        if arguments.Method=='file':
-            GND.Verification(SpeakerId,AudioF)
-        elif arguments.Method=='microphone':
-            AudioP=pd.read_csv('AudioProperties.csv')
-            AudioProps=AudioP[AudioP['Name']==SpeakerId]
-            sr=int(AudioProps.SamplingRate[AudioProps.index[0]])
-            ch=int(AudioProps.channels[AudioProps.index[0]])
-            dataType=str(AudioProps.dtype[AudioProps.index[0]])
-            af=str(AudioProps.AudioFormat[AudioProps.index[0]])
-            recording=sd.rec(int(sr*6),samplerate=sr,channels=ch,dtype=dataType)
-            print('RECORDING')
-            sd.wait()
-            print('Recording Finished')
-            fileName='Verify'+'.'+af       
-            sf.write(fileName,recording,sr)
-            GND.Verification(SpeakerId,fileName)
-  
-   
-        else:
-            print('Invalid Method')
-    elif opt=='train':
-        GND.Train_Model(AudioF,SpeakerId,Aformat=af)
+    stream = p.open(format=FORMAT,
+                    channels=CHANNELS,
+                    rate=RATE,
+                    input=True,
+                    frames_per_buffer=CHUNK)
+
+    print("* recording")
+
+    frames = []
+
+    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        data = stream.read(CHUNK)
+        frames.append(data)
+
+    print("* done recording")
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+    wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+    wf.setnchannels(CHANNELS)
+    wf.setsampwidth(p.get_sample_size(FORMAT))
+    wf.setframerate(RATE)
+    wf.writeframes(b''.join(frames))
+    wf.close()
+
+def main():
+
+    Arguments = Get_Arguments()
+    Speaker_Id = Arguments.Speaker
+    Audio_File = Arguments.Audio
+    Opt = Arguments.Option
+    Audio_Format = Arguments.fileformat
+    Base_Dir = GND.BASE_DIR
+    Recording_Dir = os.path.join(Base_Dir, 'Recordings')
+    Speaker_Rec_Dir = os.path.join(Recording_Dir, Speaker_Id)
+    
+    if os.path.isdir(Speaker_Rec_Dir):
+        pass
     else:
-        print('Invalid Option')
+        os.mkdir(Speaker_Rec_Dir)
 
-if __name__=='__main__':
-    
-    Main()
-    
+    if Opt == 'verify':
+        if Arguments.Method == 'file':
+            GND.Verification(Speaker_Id,Audio_File)
+        elif Arguments.Method == 'microphone':
+        
+            Wave_Output_File = "{}_output.wav".format(Speaker_Id)
+            Wave_Output = os.path.join(Speaker_Rec_Dir, Wave_Output_File)    
+            Record(Wave_Output)
+
+            if os.path.isfile(Wave_Output):
+
+                VAD_Applied_Files = utils.Voice_Activity_Detection(Wave_Output)
+                GND.Verification(Speaker_Id, VAD_Applied_Files)
+
+
+if __name__ == '__main__':
+    main()

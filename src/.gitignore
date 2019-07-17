@@ -6,3 +6,5 @@ LibriSpeech
 NewUbm
 *.ipynb
 *.flac
+main_first_version.py
+Client-Server
