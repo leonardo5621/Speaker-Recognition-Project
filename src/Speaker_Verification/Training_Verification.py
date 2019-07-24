@@ -11,7 +11,7 @@ from .utils import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=70,Type='diag'):
+def Train_Model(TrainDirectory, ModelName, Audio_format='wav', N_Components=70, Type='diag'):
     
     """ Training of a Gaussian Mixture Model.
 
@@ -25,7 +25,7 @@ def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=70,Type='dia
     """
     ModelsDir = os.path.join(BASE_DIR, 'AcusticModels')
     Model = GMM(N_Components, Type)        
-    FTS = Features(TrainDirectory, Aformat)
+    FTS = Features(TrainDirectory, Audio_format)
     print('Features Extracted')
     Model.fit(FTS[0])
     print('Model Trained')
@@ -36,7 +36,7 @@ def Train_Model(TrainDirectory,ModelName,Aformat='wav',N_Components=70,Type='dia
     except FileNotFoundError:
         print('Directory does not exist')
 
-def Verification(ID, Audio, ModelsDir='AcusticModels', Background_Model='ubm'):
+def Verification(ID, Audio, ModelsDir='AcusticModels', Background_Model='UBM'):
     
     """ Speaker Verification of a claimed ID.
 

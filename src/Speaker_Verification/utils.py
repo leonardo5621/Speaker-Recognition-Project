@@ -24,23 +24,29 @@ def GetSingleFile(Audio_file):
 
 #Feature Extraction for All the Files in a Given Directory
 
-def Features(PATH,Aformat):
+def Features(PATH, Aformat):
    
     FT = np.asarray(())
+    sr = 0
+    print(Aformat)
+    if os.path.isdir(PATH):
 
-    for files in os.listdir():
-        if os.path.isfile(files):
-            if files.endswith('.'+Aformat):
-                Audio=sf.read(files)
-                dataType=Audio[0].dtype
-                ch=len(Audio[0].shape)
-                sr=Audio[1]
-                Mfcc=librosa.feature.mfcc(Audio[0],sr=Audio[1],n_mfcc=13).transpose()
-                Mfcc_Normalized=preprocessing.scale(Mfcc)
-                FT=Features if FT.size==0 else np.vstack((FT,Mfcc_Normalized))            
-   
-    return [FT,dataType,ch,sr]
-
+        for files in os.listdir(PATH):
+            file_path = os.path.join(PATH, files)
+            if os.path.isfile(file_path):
+                
+                if files.endswith('.{}'.format(Aformat)):
+                    Audio=sf.read(file_path)
+                    dataType=Audio[0].dtype
+                    ch=len(Audio[0].shape)
+                    sr=Audio[1]
+                    Mfcc=librosa.feature.mfcc(Audio[0],sr=Audio[1],n_mfcc=13).transpose()
+                    Mfcc_Normalized=preprocessing.scale(Mfcc)
+                    FT=Mfcc_Normalized if FT.size==0 else np.vstack((FT,Mfcc_Normalized))            
+        print(FT)
+        return [FT,sr]
+    else:
+        print('Directory Not Found')
 
 def SilenceRemoval(AudioSignal,sr,threshold_only=False):
     

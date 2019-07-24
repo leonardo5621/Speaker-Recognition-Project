@@ -13,7 +13,7 @@ def Get_Arguments():
     parser.add_argument('Option',help='(train/verify) Choose between training a new model or performing the verification of an audio')
     parser.add_argument('Speaker',help='Speaker Id to Verify or Train a new model')
     parser.add_argument('-A','--Audio',default='audioDef',help='Audio File for Verification or Directory for Training if file option was selected on -audm argument')
-    parser.add_argument('-ff','--fileformat',default='.wav',help='Format of the Audio File(Default=.wav)')
+    parser.add_argument('-ff','--fileformat',default='wav',help='Format of the Audio File(Default=wav)')
     parser.add_argument('Method',help='Method for delivering the audio to perform the verification(file/microphone)')
     return parser.parse_args()
 
@@ -82,7 +82,8 @@ def main():
 
                 VAD_Applied_Files = utils.Voice_Activity_Detection(Wave_Output)
                 GND.Verification(Speaker_Id, VAD_Applied_Files)
-
+    elif Opt == 'train':
+        GND.Train_Model(Audio_File, Speaker_Id, Audio_format=Audio_Format)
 
 if __name__ == '__main__':
     main()
