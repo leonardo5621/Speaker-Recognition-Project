@@ -72,10 +72,15 @@ def Verification(ID, Audio, ModelsDir='AcusticModels', Background_Model='UBM'):
             if FinalScore>0:
                 print('Verification Confirmed')
                 print(FinalScore)
+                
+                return 1
+                
 
             else:
                 print('Access Denied')
                 print(FinalScore)
+
+                return 0
         else:
             print('Model not found')
     else:

@@ -80,8 +80,8 @@ def main():
 
             if os.path.isfile(Wave_Output):
 
-                VAD_Applied_Files = utils.Voice_Activity_Detection(Wave_Output)
-                GND.Verification(Speaker_Id, VAD_Applied_Files)
+                #VAD_Applied_Files = utils.Voice_Activity_Detection(Wave_Output)
+                GND.Verification(Speaker_Id, Wave_Output)
     elif Opt == 'train':
         GND.Train_Model(Audio_File, Speaker_Id, Audio_format=Audio_Format)
 
