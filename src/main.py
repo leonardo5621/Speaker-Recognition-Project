@@ -1,10 +1,13 @@
-import os
 import Speaker_Verification.Training_Verification as GND
 import Speaker_Verification.utils as utils
 import soundfile as sf
+import pandas as pd
+import numpy as np
 import argparse
 import pyaudio
 import wave
+import os
+import datetime
 from scipy.io import wavfile
 
 def Get_Arguments():
@@ -71,7 +74,8 @@ def main():
 
     if Opt == 'verify':
         if Arguments.Method == 'file':
-            GND.Verification(Speaker_Id,Audio_File)
+            GND.Verification(Speaker_Id, Audio_File)
+            Write_Csv(Decision, Speaker_Id)
         elif Arguments.Method == 'microphone':
         
             Wave_Output_File = "{}_output.wav".format(Speaker_Id)
@@ -81,9 +85,37 @@ def main():
             if os.path.isfile(Wave_Output):
 
                 #VAD_Applied_Files = utils.Voice_Activity_Detection(Wave_Output)
-                GND.Verification(Speaker_Id, Wave_Output)
+                Decision = GND.Verification(Speaker_Id, Wave_Output)
+                Write_Csv(Decision, Speaker_Id)
+
     elif Opt == 'train':
         GND.Train_Model(Audio_File, Speaker_Id, Audio_format=Audio_Format)
+
+def Write_Csv(Access, User):
+    log_file = 'profile_access/{0}/{0}.csv'.format(User)
+    x = datetime.datetime.now()
+    YY = x.strftime('%Y')
+    dd = x.strftime('%d')
+    mm = x.strftime('%B')
+    Dt = str(dd+'-'+mm+'-'+YY)
+    inform = np.array(['Total-Tentativas','Permitidas','Negadas'])
+    today = np.array([Dt]*3)
+    mlindex = [today,inform]
+    cols = ['User']
+    Access_Data = np.zeros((3,1))
+    Access_Data[0,0] += 1
+    if Access == 0:
+        Access_Data[2,0] += 1
+    else:
+        Acess_Data[1,0] += 1
+
+    Current_Data = pd.read_csv(log_file)
+    Access_Dataframe = pd.DataFrame(Access_Data, index=mlindex, columns=cols)
+    df = [Current_Data, Access_Dataframe]
+    total_log = pd.concat(df)
+    total_log.to_csv(log_file)
+
+
 
 if __name__ == '__main__':
     main()
