@@ -3,7 +3,7 @@ cffi==1.12.3
 decorator==4.4.0
 Django==2.2
 django-crispy-forms==1.7.2
-joblib==0.13.2
+joblib==1.2.0
 librosa==0.6.3
 llvmlite==0.28.0
 numba==0.43.1
